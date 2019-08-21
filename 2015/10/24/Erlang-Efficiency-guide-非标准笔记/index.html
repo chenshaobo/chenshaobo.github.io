@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="In memory of memory">
+    <meta name="author" content="csbzy">
+    <meta name="keywords" content="undefined">
+    <title>Erlang_Efficiency_guide_非标准笔记 ~ csbzy&#39; blog</title>
+    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css?v=5.7.2">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/bootstrap.min.css?v=4.3.1">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css?v=4.8.7">
+    <link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css">
+    <link rel="stylesheet" href="/lib/nprogress/nprogress.css?v=0.2.0">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+    
+        <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+    
+    <link rel="stylesheet" href="/css/main.css">
+
+    
+</head>
+
+
+<body>
+<header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>csbzy&#39; blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/categories/">Categories</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/tags/">Tags</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2"
+         style="background: url('/img/post.jpg')no-repeat center center;background-size: cover;">
+        <div class="full-bg-img">
+            <div class="mask rgba-black-light flex-center">
+                <div class="container text-center white-text wow fadeInUp">
+                    <span class="h2" id="subtitle">
+                        
+                    </span>
+                    
+                        <br>
+                        <p>Saturday, October 24th 2015, 2:27 pm</p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    
+        
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-2"></div>
+            <div class="col-lg-8 nopadding-md">
+                <div class="py-5 z-depth-3 board">
+                    <div class="post-content mx-auto">
+                        <div class="markdown-body">
+                            <h1 id="Efficiency-guide-译文"><a href="#Efficiency-guide-译文" class="headerlink" title="Efficiency guide 译文"></a>Efficiency guide 译文</h1><h1 id="timer模块"><a href="#timer模块" class="headerlink" title="timer模块"></a>timer模块</h1><p>通过<code>erlang:send_after/3</code> 或<code>erlang:start_timer/3</code> 来启动一个定时器会比使用timer模块更加有效率。timer模块使用一个独立的进程来管理定时器，因此该进程很容易过载，如果很多进程频繁创建或取消定时器。</p>
+<h1 id="list-to-atom-1"><a href="#list-to-atom-1" class="headerlink" title="list_to_atom/1"></a><code>list_to_atom/1</code></h1><p>Atoms 是不参与垃圾回收的。一旦一个原子被创建，它将不会被回收，Erlang虚拟机会因为atoms数量太多（默认1048576）而导致崩溃。<br>因此，转换输入的字符参数变成atom会导致系统变得不安全。如果只允许已经定义的原子可以允许被转换，可以使用 <code>list_to_existing_atom/1</code>去避免服务器崩溃。（这就使得我们需要提前创建所有允许被创建的atiom</p>
+<h1 id="length-1"><a href="#length-1" class="headerlink" title="length/1"></a><code>length/1</code></h1><p>执行<code>length/1</code>所消耗的时间是与输入列表的长度成比例增长的。而 <code>erlang:tuple_size/1</code>、<code>byte_size/1</code>、和<code>bit_size/1</code>的执行时间是常量时间。因此避免对长度过长的list进行<code>leng/1</code>运算。一些对<code>length/1</code>的使用可以被替换成模式匹配，比如：<br>    foo(L) when length(L) &gt;=3 -&gt; …..<br>可以替换为<br>    foo([_,_,_|<em>]=L)-&gt;….<br>另外对不使用的变量命名为`</em>`也可以提升程序效率。</p>
+<h1 id="setelement-3"><a href="#setelement-3" class="headerlink" title="setelement/3"></a><code>setelement/3</code></h1><p><code>setelement/3</code>复制它修改的元祖，因此，在循环中调用<code>setelement/3</code>将会每次都创建新的副本。如果无法优化循环调用<code>setelement/3</code>的代码，那么对一个大tuple修改多个元素的最优办法就是将tuple转换为list修改list后再转换会tuple。</p>
+<h1 id="size-1"><a href="#size-1" class="headerlink" title="size/1"></a><code>size/1</code></h1><p><code>size/1</code>可以返回tuple或binary的大小。使用 BIFs <code>tuple_size/1</code>和 <code>byte_size/1</code>可以让编译器和运行时系统去优化性能。</p>
+<h1 id="split-binary-2"><a href="#split-binary-2" class="headerlink" title="split_binary/2"></a><code>split_binary/2</code></h1><p>通过模式匹配来切分binary会比调用<code>split_binary/2</code>来的快。另外，混合比特语法匹配和split_binary/2 会阻止一些对对比特语法匹配的优化。<br>这样：<br>    “  Bin1:Num/binary,Bin2/binary  “ =Bin`<br>而不要：<br>    {Bin1,Bin2}=split_binary(Bin,Num)</p>
+<h1 id="‘–’操作符"><a href="#‘–’操作符" class="headerlink" title="‘–’操作符"></a>‘–’操作符</h1><p>列表的长度越长，<code>--</code>的效率就越低。<br>不要：<br>    HugeList1 – HugeList2<br>而是这样(对列表元素没有顺序要求的列表使用）：<br>    HugeSet1 = ordsets:from_list(HugeList1),<br>    HugeSet2 = ordsets:from_list(HugeList2),<br>    ordsets:subtract(HugeSet1,HugeSet2)<br>对于对列表元素有顺序要求的列表：<br><code>Set=gb_sets:from_list(HugeList2),
+    [E|| E 《-HugeList1, not gb_sets:is_element(E，Set)]</code></p>
+<h1 id="binaries-是如何被实例化的"><a href="#binaries-是如何被实例化的" class="headerlink" title="binaries 是如何被实例化的"></a>binaries 是如何被实例化的</h1><p>在内部来说，binaries和bitstring是一样的东西。<br>在虚拟机内部有四种类型的binary对象。有两种包含了binary数据，另外两种仅仅只是引用了binary的一部分。而binary容器是 引用binaries（引用计数binaries的缩写）和堆binaries（heap binaries）。</p>
+<ul>
+<li>Refc binaries 包含两部分：<br>1.一个保存在进程堆的（process heap）对象，即ProcBin,所有的ProcBin都是进程链接的一部分，因此gc 会追踪它们，并且在ProcBin消失后减少引用次数。<br>2.保存在所有进程堆之外的binary对象，binary对象可以被任意个ProcBins（任意个进程中）引用，它包含了引用计数器用来计算当前引用的数量，当引用数量为0时就会被回收。</li>
+<li>Heap binaries 是小binaries，最大为64字节。所以直接保存在程序的堆中。它将会在进程gc或当作消息发送时被复制，gc不需要任何的处理就可以回收。<br>有两种类型的引用对象可以引用 一个refc binary 或 heap binary，它们就是 sub binaries 和 匹配文本。<br>sub binaries 由 <code>split_binary/2</code> 创建或者匹配到一个binary时。sun binaries 只是引用了其他binaries的一部分（refc binaries 或heap binary），因此匹配binaries是非常廉价的，因为他不会发生任何的拷贝。<br>上下文匹配和sub binary类似，不同的是对binary 匹配做了优化；举个例子，它包含了一个直接指向binary数据的指针。</li>
+</ul>
+<h1 id="构造二进制"><a href="#构造二进制" class="headerlink" title="构造二进制"></a>构造二进制</h1><p>运行时系统特别对附加binary作了优化，举个例子：<br>    Bin0= “  0 “,  %%为变量Bin0绑定一个heap binary，<br>    Bin1=”  Bin0/binary,1,2,3  “  %%创建一个refc binary 其内容是Bin0的副本，refc binary的ProcBin部分拥有数据的大小（数据存储到二进制中的大小），binary object 却会有额外的空间被开辟，binary object的大小可能是 Bin0的两倍或者是256（或者更大）。<br>    Bin2 =” Bin1/binary,4,5,6”</p>
+
+                            <hr>
+                        </div>
+                        <br>
+                        <div>
+                            
+                            <p>
+                                <i class="iconfont icon-tag"></i>
+                                
+                                    <a class="hover-with-bg" href="/tags/Erlang">Erlang</a>
+                                
+                            </p>
+                            
+                                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="d-none d-lg-block col-lg-2 toc-container">
+            
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+    <div class="container comments mx-auto" id="comments">
+        
+    </div>
+</div>
+    
+</main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank" rel="nofollow noopener"> <b>Material-T</b></a>
+    <br>
+    
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="/lib/mdbootstrap/js/jquery-3.4.1.min.js"></script>
+  <script src="/lib/mdbootstrap/js/popper.min.js"></script>
+  <script src="/lib/mdbootstrap/js/bootstrap.min.js?v=4.3.1"></script>
+  <script src="/lib/mdbootstrap/js/mdb.min.js?v=4.8.7"></script>
+  <script src="/lib/nprogress/nprogress.min.js?v=0.2.0"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="/lib/tocbot/tocbot.min.js?v=4.7.0"></script>
+    
+    <script src="/js/post.js"></script>
+  
+  
+    <script src="/lib/prettify/prettify.min.js?v=0.1.0"></script>
+    <script>
+      $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums');
+        prettyPrint();
+      })
+    </script>
+  
+  
+    <script src="/lib/typed/typed.min.js?v=2.0.9"></script>
+    <script>
+        var typed = new Typed('#subtitle', {
+          strings: [
+            '  ',
+            "Erlang_Efficiency_guide_非标准笔记&nbsp;",
+        ],
+        cursorChar: "_",
+        typeSpeed: 70,
+        startDelay: 300, //开始之前延迟300毫秒
+        loop: false,
+        });
+        $(".typed-cursor").addClass("h2");
+    </script>
+  
+  
+    <script src="/lib/anchor/anchor.min.js?v=4.2.0"></script>
+    <script>
+      anchors.options = {
+        placement: "right",
+        visible: "false",
+        
+      };
+      anchors.add(".post-content > h1,h2,h3,h4,h5,h6");
+    </script>
+  
+</body>
+</html>

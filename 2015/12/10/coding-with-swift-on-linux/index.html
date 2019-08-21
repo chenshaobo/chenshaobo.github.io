@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="In memory of memory">
+    <meta name="author" content="csbzy">
+    <meta name="keywords" content="undefined">
+    <title>linux下写swift ~ csbzy&#39; blog</title>
+    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css?v=5.7.2">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/bootstrap.min.css?v=4.3.1">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css?v=4.8.7">
+    <link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css">
+    <link rel="stylesheet" href="/lib/nprogress/nprogress.css?v=0.2.0">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+    
+        <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+    
+    <link rel="stylesheet" href="/css/main.css">
+
+    
+</head>
+
+
+<body>
+<header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>csbzy&#39; blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/categories/">Categories</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/tags/">Tags</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2"
+         style="background: url('/img/post.jpg')no-repeat center center;background-size: cover;">
+        <div class="full-bg-img">
+            <div class="mask rgba-black-light flex-center">
+                <div class="container text-center white-text wow fadeInUp">
+                    <span class="h2" id="subtitle">
+                        
+                    </span>
+                    
+                        <br>
+                        <p>Thursday, December 10th 2015, 10:42 am</p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    
+        
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-2"></div>
+            <div class="col-lg-8 nopadding-md">
+                <div class="py-5 z-depth-3 board">
+                    <div class="post-content mx-auto">
+                        <div class="markdown-body">
+                            <p>swift 终于开源了，赶紧用linux尝尝鲜。<br>目前swift支持的linux版本有 ubuntu15.10 和ubuntu 14.04.下面我会用Ubuntu14.04.1来尝尝鲜。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>具体的手动安装教程可以在swift的<a href="https://github.com/apple/swift" target="_blank" rel="noopener">github仓库</a>查看.</p>
+<p>当然，苹果也提供的ubuntu的swift安装包，如果不想折腾就直接下载安装吧：</p>
+<ul>
+<li>使用<code>wget</code>获取安装包：<code>wget https://swift.org/builds/ubuntu1404/swift-2.2-SNAPSHOT-2015-12-01-b/swift-2.2-SNAPSHOT-2015-12-01-b-ubuntu14.04.tar.gz</code></li>
+</ul>
+<p>-解压：<code>tar -zxvf swift-2.2-SNAPSHOT-2015-12-01-b-ubuntu14.04.tar.gz</code></p>
+<p>-添加swift路径到PATH变量： <code>export PATH=/path/to/swift-2.2-SNAPSHOT-2015-12-01-b-ubuntu14.04/usr/bin/:&quot;${PATH}&quot;</code></p>
+<p>-确保所有的swift依赖包都安装了：1. apt-get update  2. sudo apt-get install git cmake ninja-build clang uuid-dev libicu-dev icu-devtools libbsd-dev libedit-dev libxml2-dev libsqlite3-dev swig libpython-dev libncurses5-dev pkg-config</p>
+<p>安装完后输入<code>swift --version</code>会出现版本信息时，那么恭喜你安装成功了，赶紧用swift 去coding一些有趣的东西吧。</p>
+<pre><code class="swift">root@localhost:/mnt/hgfs/workspace# swift --version
+Swift version 2.2-dev (LLVM 46be9ff861, Clang 4deb154edc, Swift 778f82939c)
+Target: x86_64-unknown-linux-gnu
+</code></pre>
+<h1 id="REPL"><a href="#REPL" class="headerlink" title="REPL"></a>REPL</h1><p>swift 提供了一个终端 REPL(read eval print loop) 进行交互</p>
+<pre><code class="swift">
+root@localhost:/mnt/hgfs/workspace/mpreader# swift
+Welcome to Swift version 2.2-dev (LLVM 46be9ff861, Clang 4deb154edc, Swift 778f82939c). Type :help for assistance.
+ 1&gt;  
+ 2&gt;  
+ 16&gt; let sum = 100
+sum: Int = 100
+17&gt; if sum &gt; 10 { print(&quot;\(sum) bigger than 10&quot;)}
+44 bigger than 10
+ 18&gt; if sum &gt; 10 { 
+ 19.     print(&quot;\(sum) bigger than 10&quot;) 
+ 20.  
+ 21. } 
+44 bigger than 10
+</code></pre>
+<p>退出REPL的命令是<code>:q</code></p>
+<h1 id="编译swift文件"><a href="#编译swift文件" class="headerlink" title="编译swift文件"></a>编译swift文件</h1><p><code>root@localhost:/mnt/hgfs/workspace# vim testSwift.swift</code></p>
+<pre><code class="swift">import Foundation
+import Glibc
+
+
+let player = [&quot;rock&quot;, &quot;paper&quot;, &quot;scissors&quot;, &quot;lizard&quot;, &quot;spock&quot;]
+
+srandom(UInt32(NSDate().timeIntervalSince1970))
+for count in 1...3 {
+    print(count)
+    sleep(1)
+}
+
+print(player[random() % player.count]);
+</code></pre>
+<p>执行 <code>swift testSwift.swift</code> 就会执行testSwift.swift文件的内容。</p>
+<pre><code class="shell">root@localhost:/mnt/hgfs/workspace# swift main.swift 
+1
+2
+3
+rock
+</code></pre>
+<h1 id="构建swift程序包"><a href="#构建swift程序包" class="headerlink" title="构建swift程序包"></a>构建swift程序包</h1><p>swift同时开源了包管理项目，一个swift bao的文件组成如下 ：</p>
+<pre><code>example-package-playingcard 
+├── Sources │ 
+    ├── PlayingCard.swift │ 
+    ├── Rank.swift 
+    │ └── Suit.swift 
+└── Package.swift
+</code></pre><p>由源代码文件在<code>source</code>目录下，和 <code>manifest file</code> 文件Package.swift组成，<code>Package.swift</code>就是定义一个package类的实例，用于表述包的基本信息和其依赖的包：</p>
+<pre><code class="swift">import PackageDescription 
+let package = Package( name: &quot;DeckOfPlayingCards&quot;, targets: [], dependencies: [ .Package(url: &quot;https://github.com/apple/example-package-fisheryates.git&quot;, majorVersion: 1), .Package(url: &quot;https://github.com/apple/example-package-playingcard.git&quot;, majorVersion: 1), ] )
+</code></pre>
+<p>通过<code>swift build</code> 就会编译并且生成包的执行文件 ：<code>./.build/debug/packagename</code></p>
+
+                            <hr>
+                        </div>
+                        <br>
+                        <div>
+                            
+                            <p>
+                                <i class="iconfont icon-tag"></i>
+                                
+                                    <a class="hover-with-bg" href="/tags/Swift">Swift</a>
+                                
+                            </p>
+                            
+                                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="d-none d-lg-block col-lg-2 toc-container">
+            
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+    <div class="container comments mx-auto" id="comments">
+        
+    </div>
+</div>
+    
+</main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank" rel="nofollow noopener"> <b>Material-T</b></a>
+    <br>
+    
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="/lib/mdbootstrap/js/jquery-3.4.1.min.js"></script>
+  <script src="/lib/mdbootstrap/js/popper.min.js"></script>
+  <script src="/lib/mdbootstrap/js/bootstrap.min.js?v=4.3.1"></script>
+  <script src="/lib/mdbootstrap/js/mdb.min.js?v=4.8.7"></script>
+  <script src="/lib/nprogress/nprogress.min.js?v=0.2.0"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="/lib/tocbot/tocbot.min.js?v=4.7.0"></script>
+    
+    <script src="/js/post.js"></script>
+  
+  
+    <script src="/lib/prettify/prettify.min.js?v=0.1.0"></script>
+    <script>
+      $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums');
+        prettyPrint();
+      })
+    </script>
+  
+  
+    <script src="/lib/typed/typed.min.js?v=2.0.9"></script>
+    <script>
+        var typed = new Typed('#subtitle', {
+          strings: [
+            '  ',
+            "linux下写swift&nbsp;",
+        ],
+        cursorChar: "_",
+        typeSpeed: 70,
+        startDelay: 300, //开始之前延迟300毫秒
+        loop: false,
+        });
+        $(".typed-cursor").addClass("h2");
+    </script>
+  
+  
+    <script src="/lib/anchor/anchor.min.js?v=4.2.0"></script>
+    <script>
+      anchors.options = {
+        placement: "right",
+        visible: "false",
+        
+      };
+      anchors.add(".post-content > h1,h2,h3,h4,h5,h6");
+    </script>
+  
+</body>
+</html>

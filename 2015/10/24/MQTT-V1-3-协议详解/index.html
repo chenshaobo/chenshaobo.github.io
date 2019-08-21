@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="In memory of memory">
+    <meta name="author" content="csbzy">
+    <meta name="keywords" content="undefined">
+    <title>MQTT_V1.3_协议详解 ~ csbzy&#39; blog</title>
+    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css?v=5.7.2">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/bootstrap.min.css?v=4.3.1">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css?v=4.8.7">
+    <link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css">
+    <link rel="stylesheet" href="/lib/nprogress/nprogress.css?v=0.2.0">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+    
+        <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+    
+    <link rel="stylesheet" href="/css/main.css">
+
+    
+</head>
+
+
+<body>
+<header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>csbzy&#39; blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/categories/">Categories</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/tags/">Tags</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2"
+         style="background: url('/img/post.jpg')no-repeat center center;background-size: cover;">
+        <div class="full-bg-img">
+            <div class="mask rgba-black-light flex-center">
+                <div class="container text-center white-text wow fadeInUp">
+                    <span class="h2" id="subtitle">
+                        
+                    </span>
+                    
+                        <br>
+                        <p>Saturday, October 24th 2015, 2:34 pm</p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    
+        
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-2"></div>
+            <div class="col-lg-8 nopadding-md">
+                <div class="py-5 z-depth-3 board">
+                    <div class="post-content mx-auto">
+                        <div class="markdown-body">
+                            <h1 id="MQTT-协议详解"><a href="#MQTT-协议详解" class="headerlink" title="MQTT 协议详解"></a>MQTT 协议详解</h1><h1 id="预览"><a href="#预览" class="headerlink" title="预览"></a>预览</h1><pre><code>    %%        7   6   5   4      3     2   1      0
+    byte1     message_type   dupflag   QoSLV   RETAIN
+    byte2     Remaining Length
+    byte3      Variable header
+    byten       ....
+                    MSG
+</code></pre><h1 id="Fixed-header（固定头部）"><a href="#Fixed-header（固定头部）" class="headerlink" title="Fixed header（固定头部）"></a>Fixed header（固定头部）</h1><pre><code>    %%        7   6   5   4      3     2   1      0
+    byte1     message_type   dupflag   QoSLV   RETAIN
+    byte2     Remaining Length
+</code></pre><ul>
+<li><p>message_type:消息类型，第4-7位比特，不同的值表示不同的意思，具体如下：</p>
+<ol>
+<li>1 ：CONNECT,客户端请求连接服务器           </li>
+<li>2 : CONNACK,连接应答</li>
+<li>3 ：PUBLISH ,发布一条消息          </li>
+<li>4 :  PUBACK, 发布应答            </li>
+<li>5 :  PUBREC, 发布被接收应答发布1            </li>
+<li>6 ：PUBREL ，发布释放应答发布2            </li>
+<li>7 : PUBCOMP,发布完成应答发布3            </li>
+<li>8 ：SUBSCRIBE,请求订阅            </li>
+<li>9 ：SUBACK,订阅应答            </li>
+<li>10 ：UNSUBSCRIBE ,取消订阅</li>
+<li>11 ：unsuback,取消订阅应答</li>
+<li>12 ：PINGREQ ,ping请求</li>
+<li>13 ：PINGRESP,ping回应</li>
+<li>14 ：DISCONNECT,客户端断开连接</li>
+<li>15 ：保留</li>
+</ol>
+</li>
+<li><p>DUP:用于标识是否是重发的发布，发布应答，订阅，取消订阅的消息，当QoS大于0，且设置必须应答时。</p>
+</li>
+<li>QoS:消息的发送保证级别；0：至多一次，1：至少1次 ；2：只有一次 3：保留</li>
+<li>RETAIN：对发布消息有用，为1时标识发布的消息对新订阅的用户有用，且需要持久化，</li>
+<li>Remaining Length:低7位为消息的字节数量，第8位为下一个字节也是长度标志位，最大为四个字节。</li>
+</ul>
+<h1 id="Variable-Header-可变头部"><a href="#Variable-Header-可变头部" class="headerlink" title="Variable Header(可变头部)"></a>Variable Header(可变头部)</h1><p>某些MQTT的命令会包含一个可变的头部组件，它位于 固定头部（fixed header)和负载之间。</p>
+<h1 id="Protocol-name-协议名称）"><a href="#Protocol-name-协议名称）" class="headerlink" title="Protocol name(协议名称）"></a>Protocol name(协议名称）</h1><p>协议名出现在一条MQTT 连接消息的可变头部中，这个字段是UTF编码，比如 MQIsdp 或MQTT</p>
+<h1 id="Protocol-version（协议版本）"><a href="#Protocol-version（协议版本）" class="headerlink" title="Protocol version（协议版本）"></a>Protocol version（协议版本）</h1><p>协议版本字段出先在一条MQTT连接消息的可变头部中，占用一个字节。</p>
+<h1 id="Connect-flag（连接标识）"><a href="#Connect-flag（连接标识）" class="headerlink" title="Connect flag（连接标识）"></a>Connect flag（连接标识）</h1><p>Clean_session,WILL,Will QoS,Retain flags 出现在CONNECT 消息的可变头部。</p>
+<h1 id="Clean-session-flag"><a href="#Clean-session-flag" class="headerlink" title="Clean session flag"></a>Clean session flag</h1><p>位置：在connect flag字节的 第1位（从0位开始），如果该位不置1则服务器需要持久化该客户端的订阅消息，以便下一次连接后继续使用。如果置1，则客户端断开后清空订阅信息，每次连接都需要重新订阅信息。</p>
+<h1 id="Will-QoS、Will-flag-、Will-Message"><a href="#Will-QoS、Will-flag-、Will-Message" class="headerlink" title="Will QoS、Will flag 、Will Message"></a>Will QoS、Will flag 、Will Message</h1><p>位置：在connect flag 字节的第3 和第4位<br>這三個flag，就是在MQTT簡介裡被提到的 最後遺囑(Last Will and Testament) 機制所用的flag。這機制是這樣的，client在一開始發送CONNECT訊息給server要求建立連線時，就把要對哪個主題說什麼遺言一起傳給server，當它在不正常的情況下斷線時(比如說網路連線斷掉、裝置故障等等)，則這些訊息就會被server主動發佈到該主題上。如果是client主動發送DISCONNECT訊息給server要求斷線時，則此機制將不會有作用。</p>
+<p>要啟動此機制，首先就是要將Will flag設為1，這樣就代表要啟用，之後你設定遺言的QoS level為何，server會依照你設定的QoS level來幫你傳送訊息，最後設定此此則遺言是否要保留(Retain)在server上。如果有設定Will flag，則在pyaload內會需要定義Will Topic和Will Message，也就是要對哪個主題發送什麼樣的遺言。</p>
+<h1 id="User-name-和-password-标识"><a href="#User-name-和-password-标识" class="headerlink" title="User name 和 password 标识"></a>User name 和 password 标识</h1><p>位置：在connect flag 字节的第6和第7位<br>客户端在连接时指明是否包含了登陆名称和登陆密码。</p>
+<h1 id="Keep-Alive-timer（存活定时器）"><a href="#Keep-Alive-timer（存活定时器）" class="headerlink" title="Keep Alive timer（存活定时器）"></a>Keep Alive timer（存活定时器）</h1><p>keep alive timer 出现在一个CONNECT消息的可变头部，定义了从客户端接受消息的最大间隔时间（秒），可用于服务端心跳包机制来判断与客户端的网络连接是否已经断开。keep alive timer 字段大小为两个字节，0表示客户端用于不会断开。</p>
+<h1 id="Connect-return-code-返回码"><a href="#Connect-return-code-返回码" class="headerlink" title="Connect return code 返回码"></a>Connect return code 返回码</h1><p>connect return code出现 在CONNACK 消息中，大小为一个字节，当前有意义的值是：</p>
+<ul>
+<li>0x00 : 接受连接</li>
+<li>0x01:  拒绝连接，协议版本不可用</li>
+<li>0x02:  连接失败，标识拒绝</li>
+<li>0x03:  服务器连接失败</li>
+<li>0x04:  用户名和密码错误</li>
+<li>0x05:  没有验证</li>
+</ul>
+<h1 id="Topic-name-订阅名称）"><a href="#Topic-name-订阅名称）" class="headerlink" title="Topic name (订阅名称）"></a>Topic name (订阅名称）</h1><p>topic name 出现在MQTT PUBLISH 消息的可变头部，用来标明发布消息所属的channel，订阅时使用该值来标明从哪里接收发布消息。</p>
+
+                            <hr>
+                        </div>
+                        <br>
+                        <div>
+                            
+                            <p>
+                                <i class="iconfont icon-tag"></i>
+                                
+                                    <a class="hover-with-bg" href="/tags/mqtt">mqtt</a>
+                                
+                            </p>
+                            
+                                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="d-none d-lg-block col-lg-2 toc-container">
+            
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+    <div class="container comments mx-auto" id="comments">
+        
+    </div>
+</div>
+    
+</main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank" rel="nofollow noopener"> <b>Material-T</b></a>
+    <br>
+    
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="/lib/mdbootstrap/js/jquery-3.4.1.min.js"></script>
+  <script src="/lib/mdbootstrap/js/popper.min.js"></script>
+  <script src="/lib/mdbootstrap/js/bootstrap.min.js?v=4.3.1"></script>
+  <script src="/lib/mdbootstrap/js/mdb.min.js?v=4.8.7"></script>
+  <script src="/lib/nprogress/nprogress.min.js?v=0.2.0"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="/lib/tocbot/tocbot.min.js?v=4.7.0"></script>
+    
+    <script src="/js/post.js"></script>
+  
+  
+    <script src="/lib/prettify/prettify.min.js?v=0.1.0"></script>
+    <script>
+      $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums');
+        prettyPrint();
+      })
+    </script>
+  
+  
+    <script src="/lib/typed/typed.min.js?v=2.0.9"></script>
+    <script>
+        var typed = new Typed('#subtitle', {
+          strings: [
+            '  ',
+            "MQTT_V1.3_协议详解&nbsp;",
+        ],
+        cursorChar: "_",
+        typeSpeed: 70,
+        startDelay: 300, //开始之前延迟300毫秒
+        loop: false,
+        });
+        $(".typed-cursor").addClass("h2");
+    </script>
+  
+  
+    <script src="/lib/anchor/anchor.min.js?v=4.2.0"></script>
+    <script>
+      anchors.options = {
+        placement: "right",
+        visible: "false",
+        
+      };
+      anchors.add(".post-content > h1,h2,h3,h4,h5,h6");
+    </script>
+  
+</body>
+</html>

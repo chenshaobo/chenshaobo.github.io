@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="In memory of memory">
+    <meta name="author" content="csbzy">
+    <meta name="keywords" content="undefined">
+    <title>webrtc一些笔记 ~ csbzy&#39; blog</title>
+    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css?v=5.7.2">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/bootstrap.min.css?v=4.3.1">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css?v=4.8.7">
+    <link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css">
+    <link rel="stylesheet" href="/lib/nprogress/nprogress.css?v=0.2.0">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+    
+        <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+    
+    <link rel="stylesheet" href="/css/main.css">
+
+    
+</head>
+
+
+<body>
+<header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>csbzy&#39; blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/categories/">Categories</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/tags/">Tags</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2"
+         style="background: url('/img/post.jpg')no-repeat center center;background-size: cover;">
+        <div class="full-bg-img">
+            <div class="mask rgba-black-light flex-center">
+                <div class="container text-center white-text wow fadeInUp">
+                    <span class="h2" id="subtitle">
+                        
+                    </span>
+                    
+                        <br>
+                        <p>Tuesday, September 13th 2016, 10:02 am</p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    
+        
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-2"></div>
+            <div class="col-lg-8 nopadding-md">
+                <div class="py-5 z-depth-3 board">
+                    <div class="post-content mx-auto">
+                        <div class="markdown-body">
+                            <h4 id="webrtc一些笔记"><a href="#webrtc一些笔记" class="headerlink" title="webrtc一些笔记"></a>webrtc一些笔记</h4><h5 id="基础框架"><a href="#基础框架" class="headerlink" title="基础框架"></a>基础框架</h5><p> <img src="http://7xj8b1.com1.z0.glb.clouddn.com/turn.png" alt=""></p>
+<p>组成部分：</p>
+<ol>
+<li><p>Signalling,客户端session控制，网络和多媒体信息同步的机制。不是RTCPerrConnection API的一部分，用户可以根据需求自己定义和实现signalling，signalling主要用于三种类型的信息：</p>
+<ul>
+<li>session控制消息：初始化或关闭 会话，还可以上报错误</li>
+<li>网络配置：通过signalling告诉 第三方(想和自己连接的Peer)自己的IP和Port</li>
+<li>多媒体文件处理能力:决定双方的多媒体文件的编码、解码格式。</li>
+</ul>
+</li>
+<li><p>ICE framework 用于连接Peer(端点)间的互相连接.</p>
+</li>
+<li>STUN 和 STUN协议的扩展 <a href="https://en.wikipedia.org/wiki/Traversal_Using_Relays_around_NAT" target="_blank" rel="noopener">TURN</a>协议，这个主要是<a href="https://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment" target="_blank" rel="noopener">ICE</a> framework 用来支持 NAT穿透，使得 RTCPeerConnection 能够应对变幻莫测的网络环境。</li>
+</ol>
+<p><code>stun</code>的<code>long-term credential mechanism</code> 的key 可以通过<code>coturn</code>的 <code>turnadmin -a -u username -p password -k</code>获得,也就是说如果通过<code>udp</code>连接到<code>coturn server</code>则需要通过 <code>long-term credential mechanism</code> 来认证,下面的例子：</p>
+<p>server:  </p>
+<pre><code>turnserver  --user=ninefingers:0xbc807ee29df3c9ffa736523fb2c4e8ee --user=gorst:hero -r north.gov --cert=turn_server_cert.pem  --pkey=turn_server_pkey.pem --log-file=stdout -v --mobility --cipher-list=ALL $@
+</code></pre><p>client 使用udp:</p>
+<pre><code>turnutils_uclient  -z 5 -n 10 -s -m 1 -l 170 -e 127.0.0.1 -X -g -u ninefingers -w youhavetoberealistic   $server_ip -v
+</code></pre><p>client 使用tcp:</p>
+<pre><code>turnutils_uclient  -z 5 -n 10 -s -m 1 -l 170 -e 127.0.0.1 -X -g -u gorst -W hero  $server_ip -v
+</code></pre><p>注意在server命令中 <code>--user=ninefingers:0xbc807ee29df3c9ffa736523fb2c4e8ee</code>和<code>--user=gorst:hero</code>的不同。</p>
+<p>简单的来说，<code>stun</code> 用来告诉client自身穿透nat之后的公网ip和端口是多少，而<code>turn</code>则是扩展了中继转发功能,<code>turn</code>具体流程如下：</p>
+<pre><code>                                                            Peer A
+                                       Server-Reflexive    +---------+
+                                       Transport Address   |         |
+                                       192.0.2.150:32102   |         |
+                                           |              /|         |
+                         TURN              |            / ^|  Peer A |
+   Client’s              Server            |           /  ||         |
+   Host Transport        Transport         |         //   ||         |
+   Address               Address           |       //     |+---------+
+  10.1.1.2:49721       192.0.2.15:3478     |+-+  //     Peer A
+           |               |               ||N| /       Host Transport
+           |   +-+         |               ||A|/        Address
+           |   | |         |               v|T|     192.168.100.2:49582
+           |   | |         |               /+-+
++---------+|   | |         |+---------+   /              +---------+
+|         ||   |N|         ||         | //               |         |
+| TURN    |v   | |         v| TURN    |/                 |         |
+| Client  |----|A|----------| Server  |------------------|  Peer B |
+|         |    | |^         |         |^                ^|         |
+|         |    |T||         |         ||                ||         |
++---------+    | ||         +---------+|                |+---------+
+               | ||                    |                |
+               | ||                    |                |
+               +-+|                    |                |
+                  |                    |                |
+                  |                    |                |
+            Client’s                   |            Peer B
+            Server-Reflexive    Relayed             Transport
+            Transport Address   Transport Address   Address
+            192.0.2.1:7000      192.0.2.15:50000     192.0.2.210:49191
+</code></pre><p>在上图中，左边的TURN Client是位于NAT后面的一个客户端（内网地址是10.1.1.2:49721），连接公网的TURN服务器（默认端口3478）后， 服务器会得到一个Client的反射地址（Reflexive Transport Address, 即NAT分配的公网IP和端口)192.0.2.1:7000， 此时Client会通过TURN命令创建或管理ALLOCATION，allocation是服务器上的一个数据结构，包含了中继地址的信息。 服务器随后会给Client分配一个中继地址，即图中的192.0.2.15:50000，另外两个对等端若要通过TURN协议和Client进行通信， 可以直接往中继地址收发数据即可，TURN服务器会把发往指定中继地址的数据转发到对应的Client，这里是其反射地址。</p>
+<p>Server上的每一个allocation都唯一对应一个client，并且只有一个中继地址，因此当数据包到达某个中继地址时，服务器总是知道应该将其转发到什么地方。 但值得一提的是，一个Client可能在同一时间在一个Server上会有多个allocation，这和上述规则是并不矛盾的。</p>
+<p>通信过程：<br><img src="http://7xj8b1.com1.z0.glb.clouddn.com/p2p_process.png" alt=""></p>
+<p>参考：<br><a href="https://pannzh.github.io/tech/p2p/2015/12/16/p2p-standard-protocol-turn.html" target="_blank" rel="noopener">P2P通信标准协议(二)之TURN</a><br><a href="https://github.com/YK-Unit/AppRTCDemo/blob/master/README.md#the-basic-p2p-communication-process" target="_blank" rel="noopener">the-basic-p2p-communication-process</a></p>
+
+                            <hr>
+                        </div>
+                        <br>
+                        <div>
+                            
+                            <p>
+                                <i class="iconfont icon-tag"></i>
+                                
+                                    <a class="hover-with-bg" href="/tags/webrtc">webrtc</a>
+                                
+                                    <a class="hover-with-bg" href="/tags/peer%20to%20peer">peer to peer</a>
+                                
+                            </p>
+                            
+                                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="d-none d-lg-block col-lg-2 toc-container">
+            
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+    <div class="container comments mx-auto" id="comments">
+        
+    </div>
+</div>
+    
+</main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank" rel="nofollow noopener"> <b>Material-T</b></a>
+    <br>
+    
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="/lib/mdbootstrap/js/jquery-3.4.1.min.js"></script>
+  <script src="/lib/mdbootstrap/js/popper.min.js"></script>
+  <script src="/lib/mdbootstrap/js/bootstrap.min.js?v=4.3.1"></script>
+  <script src="/lib/mdbootstrap/js/mdb.min.js?v=4.8.7"></script>
+  <script src="/lib/nprogress/nprogress.min.js?v=0.2.0"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="/lib/tocbot/tocbot.min.js?v=4.7.0"></script>
+    
+    <script src="/js/post.js"></script>
+  
+  
+    <script src="/lib/prettify/prettify.min.js?v=0.1.0"></script>
+    <script>
+      $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums');
+        prettyPrint();
+      })
+    </script>
+  
+  
+    <script src="/lib/typed/typed.min.js?v=2.0.9"></script>
+    <script>
+        var typed = new Typed('#subtitle', {
+          strings: [
+            '  ',
+            "webrtc一些笔记&nbsp;",
+        ],
+        cursorChar: "_",
+        typeSpeed: 70,
+        startDelay: 300, //开始之前延迟300毫秒
+        loop: false,
+        });
+        $(".typed-cursor").addClass("h2");
+    </script>
+  
+  
+    <script src="/lib/anchor/anchor.min.js?v=4.2.0"></script>
+    <script>
+      anchors.options = {
+        placement: "right",
+        visible: "false",
+        
+      };
+      anchors.add(".post-content > h1,h2,h3,h4,h5,h6");
+    </script>
+  
+</body>
+</html>

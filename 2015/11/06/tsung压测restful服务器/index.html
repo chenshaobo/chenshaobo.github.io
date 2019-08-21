@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="In memory of memory">
+    <meta name="author" content="csbzy">
+    <meta name="keywords" content="undefined">
+    <title>tsung压测restful服务器 ~ csbzy&#39; blog</title>
+    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css?v=5.7.2">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/bootstrap.min.css?v=4.3.1">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css?v=4.8.7">
+    <link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css">
+    <link rel="stylesheet" href="/lib/nprogress/nprogress.css?v=0.2.0">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+    
+        <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+    
+    <link rel="stylesheet" href="/css/main.css">
+
+    
+</head>
+
+
+<body>
+<header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>csbzy&#39; blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/categories/">Categories</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/tags/">Tags</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2"
+         style="background: url('/img/post.jpg')no-repeat center center;background-size: cover;">
+        <div class="full-bg-img">
+            <div class="mask rgba-black-light flex-center">
+                <div class="container text-center white-text wow fadeInUp">
+                    <span class="h2" id="subtitle">
+                        
+                    </span>
+                    
+                        <br>
+                        <p>Friday, November 6th 2015, 4:18 pm</p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    
+        
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-2"></div>
+            <div class="col-lg-8 nopadding-md">
+                <div class="py-5 z-depth-3 board">
+                    <div class="post-content mx-auto">
+                        <div class="markdown-body">
+                            <ol>
+<li>android 手机一部</li>
+<li>tsung 环境</li>
+</ol>
+<p>思路：使用tsung的recorder功能 先记录下app的请求内容(这个可以通过 让手机代理到tsung机器的指定端口），然后让tsung使用recorder记录下来的xml文件无脑进行回放，以达到测试服务性压力。</p>
+<h1 id="1-tsung启动监听代理"><a href="#1-tsung启动监听代理" class="headerlink" title="1.tsung启动监听代理"></a>1.tsung启动监听代理</h1><p>执行<code>tsung-recorder -p http -L 8080 start</code>,这样就会直接进行代理，并记录通过8080端口的协议内容，然后就可以在app上面点击功能让app向服务器请求内容。</p>
+<h1 id="2-编辑tsung-xml配置"><a href="#2-编辑tsung-xml配置" class="headerlink" title="2.编辑tsung.xml配置"></a>2.编辑tsung.xml配置</h1><p>第一步生成的recorder 的xml文件默认在<code>~/.tsung/tsung_recorder_date.xml</code>,内容格式大概如下：</p>
+<pre><code class="xml">&lt;session name=&#39;rec20151106-1447&#39; probability=&#39;100&#39;  type=&#39;ts_http&#39; bidi=&quot;true&quot;&gt;
+&lt;request&gt;&lt;http url=&#39;http://172.16.2.106:80/api/v1/bookclubserver/mp/get&#39; version=&#39;1.1&#39;  contents=&#39;{&quot;user_id&quot;:&quot;144447713885360800&quot;,&quot;page_size&quot;:&quot;10&quot;,&quot;filter_goods_id_set&quot;:[],&quot;filter_user_type_set&quot;:[],&quot;p_version&quot;:&quot;1&quot;,&quot;page_index&quot;:&quot;0&quot;}&#39; content_type=&#39;application/json&#39; method=&#39;POST&#39;&gt;&lt;add_cookie key=&quot;ifm_sid&quot; value=&quot;0521be8ac72fcf353dc38db77049ce2f&quot;/&gt;&lt;/http&gt;&lt;/request&gt;
+
+&lt;thinktime random=&#39;true&#39; value=&#39;1&#39;/&gt;
+
+&lt;request&gt;&lt;http url=&#39;http://172.16.2.103/data/app_user/upload/144447713885360800/logo_144447713885360800_logo.png&#39; version=&#39;1.1&#39; method=&#39;GET&#39;&gt;&lt;add_cookie key=&quot;ifm_sid&quot; value=&quot;0521be8ac72fcf353dc38db77049ce2f&quot;/&gt;&lt;/http&gt;&lt;/request&gt;
+&lt;request&gt;&lt;http url=&#39;/data/app_user/upload/144447713885360800/logo_144447713885360800_logo.png&#39; version=&#39;1.1&#39; method=&#39;GET&#39;&gt;&lt;add_cookie key=&quot;ifm_sid&quot; value=&quot;0521be8ac72fcf353dc38db77049ce2f&quot;/&gt;&lt;/http&gt;&lt;/request&gt;
+
+&lt;thinktime random=&#39;true&#39; value=&#39;3&#39;/&gt;
+
+&lt;request&gt;&lt;http url=&#39;http://172.16.2.106:80/api/personalserver/personalinfo/get&#39; version=&#39;1.1&#39;  contents=&#39;{&quot;user_id&quot;:&quot;144447713885360800&quot;,&quot;p_version&quot;:&quot;1&quot;}&#39; content_type=&#39;application/json&#39; method=&#39;POST&#39;&gt;&lt;add_cookie key=&quot;ifm_sid&quot; value=&quot;0521be8ac72fcf353dc38db77049ce2f&quot;/&gt;&lt;/http&gt;&lt;/request&gt;
+&lt;request&gt;&lt;http url=&#39;http://172.16.2.103/data/app_user/upload/144447713885360800/logo_144447713885360800_logo.png&#39; version=&#39;1.1&#39; method=&#39;GET&#39;&gt;&lt;add_cookie key=&quot;ifm_sid&quot; value=&quot;0521be8ac72fcf353dc38db77049ce2f&quot;/&gt;&lt;/http&gt;&lt;/request&gt;
+&lt;request&gt;&lt;http url=&#39;http://172.16.2.106:80/api/bookclubserver/bookreader/fprint/get&#39; version=&#39;1.1&#39;  contents=&#39;{&quot;user_id&quot;:&quot;144447713885360800&quot;,&quot;p_version&quot;:&quot;1&quot;,&quot;page_size&quot;:&quot;120&quot;,&quot;page_index&quot;:&quot;0&quot;}&#39; content_type=&#39;application/json&#39; method=&#39;POST&#39;&gt;&lt;add_cookie key=&quot;ifm_sid&quot; value=&quot;0521be8ac72fcf353dc38db77049ce2f&quot;/&gt;&lt;/http&gt;&lt;/request&gt;
+
+&lt;thinktime random=&#39;true&#39; value=&#39;2&#39;/&gt;
+....
+&lt;/session&gt;
+</code></pre>
+<p>   编辑好的tsung.xml如下，可以按照<a href="http://tsung.erlang-projects.org/user_manual/configuration.html" target="_blank" rel="noopener">tsung文档</a>的来配置，其实觉得挺复杂的。。：</p>
+<pre><code class="xml"> &lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE tsung SYSTEM &quot;/usr/local/share/tsung/tsung-1.0.dtd&quot;[ &lt;!ENTITY mysession1 SYSTEM &quot;/root/.tsung/tsung_recorder20151106-1447.xml&quot;&gt;
+]&gt;
+&lt;tsung loglevel=&quot;notice&quot; version=&quot;1.0&quot;&gt;
+  &lt;!-- Client side setup --&gt;
+  &lt;clients&gt;
+    &lt;client host=&quot;localhost&quot; use_controller_vm=&quot;true&quot; maxusers=&quot;30000&quot;/&gt;
+  &lt;/clients&gt;
+
+  &lt;!-- Server side setup --&gt;
+&lt;servers&gt;
+ &lt;server host=&quot;localhost&quot; port=&quot;8080&quot;  type=&quot;tcp&quot;&gt;&lt;/server&gt;
+&lt;/servers&gt;
+  &lt;!-- to start os monitoring (cpu, network, memory). Use an erlang
+  agent on the remote machine or SNMP. erlang is the default --&gt;
+  &lt;monitoring&gt;
+    &lt;monitor host=&quot;myserver&quot; type=&quot;snmp&quot;&gt;&lt;/monitor&gt;
+  &lt;/monitoring&gt;
+
+  &lt;load&gt;
+  &lt;!-- several arrival phases can be set: for each phase, you can set
+  the mean inter-arrival time between new clients and the phase
+  duration --&gt;
+   &lt;arrivalphase phase=&quot;1&quot; duration=&quot;10&quot; unit=&quot;minute&quot;&gt;
+     &lt;users interarrival=&quot;2&quot; unit=&quot;second&quot;&gt;&lt;/users&gt;
+   &lt;/arrivalphase&gt;
+  &lt;/load&gt;
+  &lt;options&gt;
+   &lt;option type=&quot;ts_http&quot; name=&quot;user_agent&quot;&gt;
+    &lt;user_agent probability=&quot;80&quot;&gt;Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7.8) Gecko/20050513 Galeon/1.3.21&lt;/user_agent&gt;
+    &lt;user_agent probability=&quot;20&quot;&gt;Mozilla/5.0 (Windows; U; Windows NT 5.2; fr-FR; rv:1.7.8) Gecko/20050511 Firefox/1.0.4&lt;/user_agent&gt;
+   &lt;/option&gt;
+  &lt;/options&gt;
+  &lt;!-- start a session for a http user. the probability is the
+  frequency of this type os session. The sum of all session&#39;s
+  probabilities must be 100 --&gt;
+ &lt;sessions&gt;
+ &amp;mysession1;
+ &lt;/sessions&gt;
+&lt;/tsung&gt;
+
+</code></pre>
+<h1 id="3-进行压测"><a href="#3-进行压测" class="headerlink" title="3.进行压测"></a>3.进行压测</h1><p>执行<code>tsung start</code>就可以开始进行压测了</p>
+<h1 id="4-生成report"><a href="#4-生成report" class="headerlink" title="4.生成report"></a>4.生成report</h1><p>最后cd到<code>~/.tsung/log/data/</code>里面执行执行 <code>tsung_stats.pl</code>   生成<code>report.html</code></p>
+
+                            <hr>
+                        </div>
+                        <br>
+                        <div>
+                            
+                            <p>
+                                <i class="iconfont icon-tag"></i>
+                                
+                                    <a class="hover-with-bg" href="/tags/Erlang">Erlang</a>
+                                
+                                    <a class="hover-with-bg" href="/tags/Tsung">Tsung</a>
+                                
+                                    <a class="hover-with-bg" href="/tags/%E5%8E%8B%E6%B5%8B">压测</a>
+                                
+                            </p>
+                            
+                                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="d-none d-lg-block col-lg-2 toc-container">
+            
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+    <div class="container comments mx-auto" id="comments">
+        
+    </div>
+</div>
+    
+</main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank" rel="nofollow noopener"> <b>Material-T</b></a>
+    <br>
+    
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="/lib/mdbootstrap/js/jquery-3.4.1.min.js"></script>
+  <script src="/lib/mdbootstrap/js/popper.min.js"></script>
+  <script src="/lib/mdbootstrap/js/bootstrap.min.js?v=4.3.1"></script>
+  <script src="/lib/mdbootstrap/js/mdb.min.js?v=4.8.7"></script>
+  <script src="/lib/nprogress/nprogress.min.js?v=0.2.0"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="/lib/tocbot/tocbot.min.js?v=4.7.0"></script>
+    
+    <script src="/js/post.js"></script>
+  
+  
+    <script src="/lib/prettify/prettify.min.js?v=0.1.0"></script>
+    <script>
+      $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums');
+        prettyPrint();
+      })
+    </script>
+  
+  
+    <script src="/lib/typed/typed.min.js?v=2.0.9"></script>
+    <script>
+        var typed = new Typed('#subtitle', {
+          strings: [
+            '  ',
+            "tsung压测restful服务器&nbsp;",
+        ],
+        cursorChar: "_",
+        typeSpeed: 70,
+        startDelay: 300, //开始之前延迟300毫秒
+        loop: false,
+        });
+        $(".typed-cursor").addClass("h2");
+    </script>
+  
+  
+    <script src="/lib/anchor/anchor.min.js?v=4.2.0"></script>
+    <script>
+      anchors.options = {
+        placement: "right",
+        visible: "false",
+        
+      };
+      anchors.add(".post-content > h1,h2,h3,h4,h5,h6");
+    </script>
+  
+</body>
+</html>

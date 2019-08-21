@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="In memory of memory">
+    <meta name="author" content="csbzy">
+    <meta name="keywords" content="undefined">
+    <title>csbzy&#39; blog</title>
+    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css?v=5.7.2">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/bootstrap.min.css?v=4.3.1">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css?v=4.8.7">
+    <link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css">
+    <link rel="stylesheet" href="/lib/nprogress/nprogress.css?v=0.2.0">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+    
+        <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+    
+    <link rel="stylesheet" href="/css/main.css">
+
+    
+</head>
+
+
+<body>
+<header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>csbzy&#39; blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/categories/">Categories</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/tags/">Tags</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2"
+         style="background: url('/img/index.jpg')no-repeat center center;background-size: cover;">
+        <div class="full-bg-img">
+            <div class="mask rgba-black-light flex-center">
+                <div class="container text-center white-text wow fadeInUp">
+                    <span class="h2" id="subtitle">
+                        
+                    </span>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    
+        <div class="container nopadding-md">
+            <div class="py-5 z-depth-3 board">
+                
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-md-10 m-auto">
+                            
+
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2015/10/27/hexo的archive分页问题/">
+                <p class="h4 index-header">hexo的archive分页问题</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">在配置hexo的过程中，希望的效果是首页的文章分页，然后 archives和tags的文章不分页。开始以为是主题的代码实现bug，蒙头去改。后来才发现是配置问题，在hexo的issue里面也有这样的记录.本人的hexo版本是 3.0 ，步骤如下：1.安装 hexo-generator-archive： npm hexo-generator-archive --save2.配置_config.yml，修改：
+# Pagination
+## Set per_page to 0 to disable pagination
+per_page: 6
+pagination_dir: page
+archive_generator:
+  yearly: true
+  monthly: true
+  per_page: 0
+category_generator:
+  per_page: 0
+tag_generator:
+  per_page: 0
+
+</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2015-10-27
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/hexo">hexo</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2015/10/24/MQTT-V1-3-协议详解/">
+                <p class="h4 index-header">MQTT_V1.3_协议详解</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">MQTT 协议详解预览    %%        7   6   5   4      3     2   1      0
+    byte1     message_type   dupflag   QoSLV   RETAIN
+    byte2     Remaining Length
+    byte3      Variable header
+    byten       ....
+                    MSG
+Fixed header（固定头部）    %%        7   6   5   4      3     2   1      0
+    byte1     message_type   dupflag   QoSLV   RETAIN
+    byte2     Remaining Length
+
+message_type:消息类型，第4-7位比特，不同的值表示不同的意思，具体如下：
+
+1 ：CONNECT,客户端请求连接服务器           
+2 : CONNACK,连接应答
+3 ：PUBLISH ,发布一条消息       </div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2015-10-24
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/mqtt">mqtt</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2015/10/24/Erlang-Efficiency-guide-非标准笔记/">
+                <p class="h4 index-header">Erlang_Efficiency_guide_非标准笔记</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">Efficiency guide 译文timer模块通过erlang:send_after/3 或erlang:start_timer/3 来启动一个定时器会比使用timer模块更加有效率。timer模块使用一个独立的进程来管理定时器，因此该进程很容易过载，如果很多进程频繁创建或取消定时器。
+list_to_atom/1Atoms 是不参与垃圾回收的。一旦一个原子被创建，它将不会被回收，Erlang虚拟机会因为atoms数量太多（默认1048576）而导致崩溃。因此，转换输入的字符参数变成atom会导致系统变得不安全。如果只允许已经定义的原子可以允许被转换，可以使用 list_to_existing_atom/1去避免服务器崩溃。（这就使得我们需要提前创建所有允许被创建的atiom
+length/1执行length/1所消耗的时间是与输入列表的长度成比例增长的。而 erlang:tuple_size/1、byte_size/1、和bit_size/1的执行时间是常量时间。因此避免对长度过长的list进行leng/1运算。一些对length/1的使用可以被替换成模式匹配，比如：    f</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2015-10-24
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Erlang">Erlang</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2015/10/22/Erlang通过NIF集成c代码示例/">
+                <p class="h4 index-header">Erlang通过NIF集成c代码示例</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">ERLANG NIF 编写很多时候一下计算量大，效率要求很高的地方也许使用c会好于erlang。
+Erlang层代码
+通过 -on_load模块属性，实现erlang vm 加载模块时同时加载c的共享库文件。
+nif的函数erlang入口为 func(args) -&gt; erlang:nif_error({error,not_loaded}).
+
+C层代码
+包含 erl_nif.h  , #include&lt;erl_nif.h&gt;，
+注册NIF ,这里分为了三步：
+ErlNifFunc 数组，告诉erlang vm 库中实现的NIF，以及erlang函数名对应的c实现函数:static ErlNifFunc test_nifs[] ={{“hello”,1,&amp;hello_1}};
+ERL_NIF_INIT宏 将 ErlNifFunc数组联同所属模块的模块名告诉Erlang vm。ERL_NIF_INIT(test_nif,test_nifs,NULL,NULL,NULL,NULL);
+c实现函数 static ERL_NIF_TERM hello_1(ErlNifE</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2015-10-22
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Erlang">Erlang</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2015/10/22/Riak安装与MapReduce测试/">
+                <p class="h4 index-header">Riak安装与MapReduce测试</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">Riak安装与MapReduce测试1.安装环境:
+Ubuntu 14.04
+riak-2.1.1 源码编译
+erlang版本R16B03-1(注意 riak目前还不支持R17以上的erlang 版本)
+
+2.依赖安装
+ssl :sudo apt-get install libssl0.9.8
+pam library: sudo apt-get install libpam0g-dev
+
+3.下载并编译riak
+下载:wget http://s3.amazonaws.com/downloads.basho.com/riak/2.1/2.1.1/riak-2.1.1.tar.gz
+解压:tar zxvf riak-2.1.1.tar.gz
+编译:cd riak-2.1.1 &amp;&amp; make
+
+4.构建riak集群
+生成riak node实例:make devrel DEVNODES=$N,其中N是想要生成的节点数
+配置riak node ：riak的配置文件位于 $RIAK_HOME/dev/dev*/etc/riak.conf,可以配置节点名称,HTTP服务监听IP和端口</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2015-10-22
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Riak">Riak</a>&nbsp;
+                        
+                            <a href="/tags/MapReduce">MapReduce</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2015/10/22/ejabberd-receiver分析/">
+                <p class="h4 index-header">ejabberd_receiver分析</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">ejabberd_receiver 分析ejabberd_receiver是ejabberd 中 网关层的数据receive模块，客户端发送的数据通过ejabberd_receiver 接收并通过xml port解析后发送给 ejabberd_c2s的实例处理，至于它的加密、压缩、解压之类的就不说了。
+主要说一下这个shaper（字母翻译：脉冲整形器，个人理解，流量控制）机制,什么意思呢？
+原来 ejabberd_receiver会根据本次socket接收到的包的大小，判断是否需要缓冲一会再接收下一个socket包，这里用到了socket参数{active, once}
+算法如下：    根据本次收到的包的大小 和 maxrate 算出应该缓冲多少s，再算出上一次 到 本次接收数据包的时间间隔来决定是否需要缓冲。
+shaper:update/2:
+update(none, _Size) -&gt; {none, 0};
+update(#maxrate{} = State, Size) -&gt;
+    MinInterv = 1000 * Size /(2 * State#maxra</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2015-10-22
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Ejabberd">Ejabberd</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+
+
+<nav aria-label="index posts navigation">
+<ul class="pagination pg-blue justify-content-center mt-5">
+    
+        <li class="page-item">
+        <a class="page-link" href="/page/2/">Previous</a>
+        </li>
+    
+    
+        <li class="page-item">
+        <a class="page-link" href="/page/4/">Next</a>
+        </li>
+    
+</ul>
+</nav>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+</main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank" rel="nofollow noopener"> <b>Material-T</b></a>
+    <br>
+    
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="/lib/mdbootstrap/js/jquery-3.4.1.min.js"></script>
+  <script src="/lib/mdbootstrap/js/popper.min.js"></script>
+  <script src="/lib/mdbootstrap/js/bootstrap.min.js?v=4.3.1"></script>
+  <script src="/lib/mdbootstrap/js/mdb.min.js?v=4.8.7"></script>
+  <script src="/lib/nprogress/nprogress.min.js?v=0.2.0"></script>
+  <script src="/js/main.js"></script>
+  
+  
+    <script src="/lib/prettify/prettify.min.js?v=0.1.0"></script>
+    <script>
+      $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums');
+        prettyPrint();
+      })
+    </script>
+  
+  
+    <script src="/lib/typed/typed.min.js?v=2.0.9"></script>
+    <script>
+        var typed = new Typed('#subtitle', {
+          strings: [
+            '  ',
+            "In memory of memory&nbsp;",
+        ],
+        cursorChar: "_",
+        typeSpeed: 70,
+        startDelay: 300, //开始之前延迟300毫秒
+        loop: false,
+        });
+        $(".typed-cursor").addClass("h2");
+    </script>
+  
+  
+    <script src="/lib/anchor/anchor.min.js?v=4.2.0"></script>
+    <script>
+      anchors.options = {
+        placement: "right",
+        visible: "false",
+        
+      };
+      anchors.add(".post-content > h1,h2,h3,h4,h5,h6");
+    </script>
+  
+</body>
+</html>

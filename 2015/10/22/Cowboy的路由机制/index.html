@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="In memory of memory">
+    <meta name="author" content="csbzy">
+    <meta name="keywords" content="undefined">
+    <title>Cowboy的路由机制 ~ csbzy&#39; blog</title>
+    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css?v=5.7.2">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/bootstrap.min.css?v=4.3.1">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css?v=4.8.7">
+    <link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css">
+    <link rel="stylesheet" href="/lib/nprogress/nprogress.css?v=0.2.0">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+    
+        <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+    
+    <link rel="stylesheet" href="/css/main.css">
+
+    
+</head>
+
+
+<body>
+<header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>csbzy&#39; blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/categories/">Categories</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/tags/">Tags</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2"
+         style="background: url('/img/post.jpg')no-repeat center center;background-size: cover;">
+        <div class="full-bg-img">
+            <div class="mask rgba-black-light flex-center">
+                <div class="container text-center white-text wow fadeInUp">
+                    <span class="h2" id="subtitle">
+                        
+                    </span>
+                    
+                        <br>
+                        <p>Thursday, October 22nd 2015, 6:24 pm</p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    
+        
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-2"></div>
+            <div class="col-lg-8 nopadding-md">
+                <div class="py-5 z-depth-3 board">
+                    <div class="post-content mx-auto">
+                        <div class="markdown-body">
+                            <h1 id="路由机制"><a href="#路由机制" class="headerlink" title="路由机制"></a>路由机制</h1><p>配置链接URL到Erlang模块（处理对应请求的模块）的映射就是路由。</p>
+<p>当 Cowboy接收到一个请求时，它会尝试在给定的分发规则中匹配 域名 到对应的资源路径。如果匹配成功，那么对应的Erlang 模块就会被执行。</p>
+<p>Cowboy首先会匹配域名，接着尝试找到匹配的资源路径。</p>
+<p>Cowboy会将路由规则编译后，再使用。</p>
+<h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1><p>通用的路由结构是这样定义的：<br><code>Routes= [Host1, Host2, ... HostN].</code></p>
+<p>每一个域名的匹配规则 包含了 对连接路径的选项约束和路径部件的列表。</p>
+<p><code>Host1= {HostMatch, PathsList}.</code><br><code>Host2= {HostMatch, Constraints, PathsList}.</code></p>
+<p>路径部件的定义如下：<br><code>PathsList= [Path1, Path2, ... PathN].</code></p>
+<p>最后，每一路径包含了该路径自身的匹配规则以及对应的处理模块<br><code>Path1= {PathMatch, Handler, Opts}.</code><br><code>Path2= {PathMatch, Constraints, Handler, Opts}.</code></p>
+<h1 id="匹配规则语法"><a href="#匹配规则语法" class="headerlink" title="匹配规则语法"></a>匹配规则语法</h1><p>匹配语法规则用于标识 域名到路径间的处理handlers。<br>域名的语法规则：<br><code>HostMatch1= &quot;cowboy.example.org&quot;.</code><br><code>HostMatch2= &quot;cowboy.example.org.&quot;.</code><br><code>HostMatch3= &quot;.cowboy.example.org&quot;.</code></p>
+<p>路径的语法规则：<br><code>PathMatch= &quot;/hats/:name/prices&quot;.</code><br><code>HostMatch= &quot;:subdomain.example.org&quot;.</code></p>
+<p>此外，还可以将域名的某一字段保存到Req对象中，再后续可以使用，这就是值绑定。<br><code>PathMatch= &quot;/hats/:name/prices&quot;.</code><br><code>HostMatch= &quot;:subdomain.example.org&quot;.</code><br>比如，<a href="http://test.example.org/hats/wild_cowboy_legendary/prices" target="_blank" rel="noopener">http://test.example.org/hats/wild_cowboy_legendary/prices</a> 将会<br>把test绑定到subdomain，而wild_cowboy_legendary就会绑定到name，它们可以被cow_req:binding/{2,3}中检索，绑定的名字必须是一个atom<br>‘_’：表示匹配任何内容</p>
+<h1 id="约束"><a href="#约束" class="headerlink" title="约束"></a>约束</h1><p>匹配域名和路径完成后，就会检测是否满足可选的约束，约束如下：</p>
+<pre><code class="erlang">{Name, int}
+{Name, function, fun ((Value) -&gt; true | {true, NewValue} | false)}
+</code></pre>
+<p>int 约束将会检查 绑定的二进制串是一个int，或可被转化成一个int<br>function约束，将会调用给定的约束函数并且返回结果，给定函数必须自己保证不会崩溃的。</p>
+<p>为了保存Cowboy可以更高效地查找正确的handler模块，Cowboy会编译定义好的路由分发规则。<br>编译的方法是：cowboy_router:compile/1.</p>
+<pre><code class="erlang">    Dispatch= cowboy_router:compile([
+    %% {HostMatch, list({PathMatch, Handler, Opts})}
+    {&#39;_&#39;, [{&#39;_&#39;, my_handler, []}]}
+    ]),
+    %% Name, NbAcceptors, TransOpts, ProtoOpts
+    cowboy:start_http(my_http_listener, 100,
+       [{port, 8080}],
+       [{env, [{dispatch, Dispatch}]}]
+    ).
+</code></pre>
+<p>如果定义好的路由分发规则有错误，cowboy_router:compile/1<br>将会返回{error, badarg}</p>
+<h1 id="在线更新路由规则"><a href="#在线更新路由规则" class="headerlink" title="在线更新路由规则"></a>在线更新路由规则</h1><p>通过 cowboy:set_env/3更新路由的分发规则，连接监听模块接受新的连接时就会使用新的路由分发规则。</p>
+<pre><code class="erlang">    cowboy:set_env(my_http_listener, dispatch,
+    cowboy_router:compile(Dispatch)).
+</code></pre>
+
+                            <hr>
+                        </div>
+                        <br>
+                        <div>
+                            
+                            <p>
+                                <i class="iconfont icon-tag"></i>
+                                
+                                    <a class="hover-with-bg" href="/tags/Cowboy">Cowboy</a>
+                                
+                            </p>
+                            
+                                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="d-none d-lg-block col-lg-2 toc-container">
+            
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+    <div class="container comments mx-auto" id="comments">
+        
+    </div>
+</div>
+    
+</main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank" rel="nofollow noopener"> <b>Material-T</b></a>
+    <br>
+    
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="/lib/mdbootstrap/js/jquery-3.4.1.min.js"></script>
+  <script src="/lib/mdbootstrap/js/popper.min.js"></script>
+  <script src="/lib/mdbootstrap/js/bootstrap.min.js?v=4.3.1"></script>
+  <script src="/lib/mdbootstrap/js/mdb.min.js?v=4.8.7"></script>
+  <script src="/lib/nprogress/nprogress.min.js?v=0.2.0"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="/lib/tocbot/tocbot.min.js?v=4.7.0"></script>
+    
+    <script src="/js/post.js"></script>
+  
+  
+    <script src="/lib/prettify/prettify.min.js?v=0.1.0"></script>
+    <script>
+      $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums');
+        prettyPrint();
+      })
+    </script>
+  
+  
+    <script src="/lib/typed/typed.min.js?v=2.0.9"></script>
+    <script>
+        var typed = new Typed('#subtitle', {
+          strings: [
+            '  ',
+            "Cowboy的路由机制&nbsp;",
+        ],
+        cursorChar: "_",
+        typeSpeed: 70,
+        startDelay: 300, //开始之前延迟300毫秒
+        loop: false,
+        });
+        $(".typed-cursor").addClass("h2");
+    </script>
+  
+  
+    <script src="/lib/anchor/anchor.min.js?v=4.2.0"></script>
+    <script>
+      anchors.options = {
+        placement: "right",
+        visible: "false",
+        
+      };
+      anchors.add(".post-content > h1,h2,h3,h4,h5,h6");
+    </script>
+  
+</body>
+</html>

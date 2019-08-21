@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="In memory of memory">
+    <meta name="author" content="csbzy">
+    <meta name="keywords" content="undefined">
+    <title>csbzy&#39; blog</title>
+    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css?v=5.7.2">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/bootstrap.min.css?v=4.3.1">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css?v=4.8.7">
+    <link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css">
+    <link rel="stylesheet" href="/lib/nprogress/nprogress.css?v=0.2.0">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+    
+        <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+    
+    <link rel="stylesheet" href="/css/main.css">
+
+    
+</head>
+
+
+<body>
+<header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>csbzy&#39; blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/categories/">Categories</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/tags/">Tags</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2"
+         style="background: url('/img/index.jpg')no-repeat center center;background-size: cover;">
+        <div class="full-bg-img">
+            <div class="mask rgba-black-light flex-center">
+                <div class="container text-center white-text wow fadeInUp">
+                    <span class="h2" id="subtitle">
+                        
+                    </span>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    
+        <div class="container nopadding-md">
+            <div class="py-5 z-depth-3 board">
+                
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-md-10 m-auto">
+                            
+
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2016/01/05/githubConnectionWay/">
+                <p class="h4 index-header">githubConnectionWay</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">Github https和ssh连接的区别有个项目在push 一直都需要输入帐号密码，发现原来是因为使用了https来连接；使用https方式连接的话，.git/config里面的url配置是https://github.com/XXX/XXX.git,这样的话，每次push都需要输入帐号密码了。而使用ssh方式连接的话，.git/config里面的url配置是[git@github.com](mailto:git@github.com):XXX/XXX.git,这样的话，只要配置好了ssh key，就只需要输入passphrase就ok了。
+至于如何设置连接方式?
+可以通过git remote set-url  origin设置
+git remote set-url  origin [git@github.com](mailto:git@github.com):XXX/XXX.git
+</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2016-01-05
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Git">Git</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2015/12/10/coding-with-swift-on-linux/">
+                <p class="h4 index-header">linux下写swift</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">swift 终于开源了，赶紧用linux尝尝鲜。目前swift支持的linux版本有 ubuntu15.10 和ubuntu 14.04.下面我会用Ubuntu14.04.1来尝尝鲜。
+安装具体的手动安装教程可以在swift的github仓库查看.
+当然，苹果也提供的ubuntu的swift安装包，如果不想折腾就直接下载安装吧：
+
+使用wget获取安装包：wget https://swift.org/builds/ubuntu1404/swift-2.2-SNAPSHOT-2015-12-01-b/swift-2.2-SNAPSHOT-2015-12-01-b-ubuntu14.04.tar.gz
+
+-解压：tar -zxvf swift-2.2-SNAPSHOT-2015-12-01-b-ubuntu14.04.tar.gz
+-添加swift路径到PATH变量： export PATH=/path/to/swift-2.2-SNAPSHOT-2015-12-01-b-ubuntu14.04/usr/bin/:&quot;${PATH}&quot;
+-确保所有的swift依赖包都安装了</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2015-12-10
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Swift">Swift</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2015/12/09/different-between-p-and-w-in-io-format/">
+                <p class="h4 index-header">io_lib:format 中文乱码探究</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">最近发现erlang项目的配置文件某些中文显示会乱码，先说下配置文件的实现：
+
+由file:consult/1读取配置的原始文件（一系列的erlang term），获取到原始的 erlang term
+再转化成erlang 代码 然后再会写到文件。
+
+问题就出在了转化erlang 代码这里，我们使用的是io_lib:format(&quot;~p&quot;,[data]) 来将erlang term 转化成字符串再回写到文件，而 io:format/2关于~p/~w在官方文档里面有这样的描述：
+
+w   Writes data with the standard syntax. This is used to output Erlang terms. Atoms are printed within quotes if they contain embedded non-printable   characters, and floats are printed accurately as the shortest, correctly rounded string.p Writes</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2015-12-09
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Erlang">Erlang</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2015/11/16/Nginx配置/">
+                <p class="h4 index-header">Nginx配置</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">Nginx配置文件详细说明
+在此记录下Nginx服务器nginx.conf的配置文件说明, 部分注释收集与网络.
+#运行用户user www-data;    
+#启动进程,通常设置成和cpu的数量相等worker_processes  1;
+#全局错误日志及PID文件error_log  /var/log/nginx/error.log;pid        /var/run/nginx.pid;
+#工作模式及连接数上限
+events {
+    use   epoll;             #epoll是多路复用IO(I/O Multiplexing)中的一种方式,但是仅用于linux2.6以上内核,可以大大提高nginx的性能
+    worker_connections  1024;#单个后台worker process进程的最大并发链接数
+    # multi_accept on; 
+}
+#设定http服务器，利用它的反向代理功能提供负载均衡支持
+http {
+  #设定mime类型,类型由mime.type文件定义
+    include       /etc/ngi</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2015-11-16
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Nginx">Nginx</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2015/11/11/erlang—program-optimization/">
+                <p class="h4 index-header">erlang程序优化点</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1"> 进程标志设置消息和binary内存：erlang:process_flag(min_bin_vheap_size, 1024*1024)，减少大量消息到达或处理过程中产生大量binary时的gc次数堆内存：erlang:process_flag(min_heap_size, 1024*1024)，减少处理过程中产生大量term，尤其是list时的gc次数进程优先级：erlang:process_flag(priority, high)，防止特殊进程被其它常见进程强制执行reductions进程调度器绑定：erlang:process_flag(scheduler, 1)，当进程使用了port时，还需要port绑定支持，防止进程在不同调度器间迁移引起性能损失，如cache、跨numa node拷贝等，当进程使用了port时，主要是套接字，若进程与port不在一个scheduler上，可能会引发严重的epoll fd锁竞争及跨numa node拷贝，导致性能严重下降
+ 虚拟机参数+S X:X ：启用调度器数量，多个调度器使用多线程，有大量锁争用-smp disable ：取消smp，仅使</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2015-11-11
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Erlang">Erlang</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2015/11/06/tsung压测restful服务器/">
+                <p class="h4 index-header">tsung压测restful服务器</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">
+android 手机一部
+tsung 环境
+
+思路：使用tsung的recorder功能 先记录下app的请求内容(这个可以通过 让手机代理到tsung机器的指定端口），然后让tsung使用recorder记录下来的xml文件无脑进行回放，以达到测试服务性压力。
+1.tsung启动监听代理执行tsung-recorder -p http -L 8080 start,这样就会直接进行代理，并记录通过8080端口的协议内容，然后就可以在app上面点击功能让app向服务器请求内容。
+2.编辑tsung.xml配置第一步生成的recorder 的xml文件默认在~/.tsung/tsung_recorder_date.xml,内容格式大概如下：
+&lt;session name=&#39;rec20151106-1447&#39; probability=&#39;100&#39;  type=&#39;ts_http&#39; bidi=&quot;true&quot;&gt;
+&lt;request&gt;&lt;http url=&#39;http://172.16.2.106:80/</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2015-11-06
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Erlang">Erlang</a>&nbsp;
+                        
+                            <a href="/tags/Tsung">Tsung</a>&nbsp;
+                        
+                            <a href="/tags/%E5%8E%8B%E6%B5%8B">压测</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+
+
+<nav aria-label="index posts navigation">
+<ul class="pagination pg-blue justify-content-center mt-5">
+    
+        <li class="page-item">
+        <a class="page-link" href="/">Previous</a>
+        </li>
+    
+    
+        <li class="page-item">
+        <a class="page-link" href="/page/3/">Next</a>
+        </li>
+    
+</ul>
+</nav>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+</main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank" rel="nofollow noopener"> <b>Material-T</b></a>
+    <br>
+    
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="/lib/mdbootstrap/js/jquery-3.4.1.min.js"></script>
+  <script src="/lib/mdbootstrap/js/popper.min.js"></script>
+  <script src="/lib/mdbootstrap/js/bootstrap.min.js?v=4.3.1"></script>
+  <script src="/lib/mdbootstrap/js/mdb.min.js?v=4.8.7"></script>
+  <script src="/lib/nprogress/nprogress.min.js?v=0.2.0"></script>
+  <script src="/js/main.js"></script>
+  
+  
+    <script src="/lib/prettify/prettify.min.js?v=0.1.0"></script>
+    <script>
+      $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums');
+        prettyPrint();
+      })
+    </script>
+  
+  
+    <script src="/lib/typed/typed.min.js?v=2.0.9"></script>
+    <script>
+        var typed = new Typed('#subtitle', {
+          strings: [
+            '  ',
+            "In memory of memory&nbsp;",
+        ],
+        cursorChar: "_",
+        typeSpeed: 70,
+        startDelay: 300, //开始之前延迟300毫秒
+        loop: false,
+        });
+        $(".typed-cursor").addClass("h2");
+    </script>
+  
+  
+    <script src="/lib/anchor/anchor.min.js?v=4.2.0"></script>
+    <script>
+      anchors.options = {
+        placement: "right",
+        visible: "false",
+        
+      };
+      anchors.add(".post-content > h1,h2,h3,h4,h5,h6");
+    </script>
+  
+</body>
+</html>

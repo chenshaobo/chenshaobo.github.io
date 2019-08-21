@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="In memory of memory">
+    <meta name="author" content="csbzy">
+    <meta name="keywords" content="undefined">
+    <title>csbzy&#39; blog</title>
+    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css?v=5.7.2">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/bootstrap.min.css?v=4.3.1">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css?v=4.8.7">
+    <link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css">
+    <link rel="stylesheet" href="/lib/nprogress/nprogress.css?v=0.2.0">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+    
+        <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+    
+    <link rel="stylesheet" href="/css/main.css">
+
+    
+</head>
+
+
+<body>
+<header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>csbzy&#39; blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/categories/">Categories</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/tags/">Tags</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2"
+         style="background: url('/img/index.jpg')no-repeat center center;background-size: cover;">
+        <div class="full-bg-img">
+            <div class="mask rgba-black-light flex-center">
+                <div class="container text-center white-text wow fadeInUp">
+                    <span class="h2" id="subtitle">
+                        
+                    </span>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    
+        <div class="container nopadding-md">
+            <div class="py-5 z-depth-3 board">
+                
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-md-10 m-auto">
+                            
+
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2016/09/13/webrtc一些笔记/">
+                <p class="h4 index-header">webrtc一些笔记</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">webrtc一些笔记基础框架 
+组成部分：
+
+Signalling,客户端session控制，网络和多媒体信息同步的机制。不是RTCPerrConnection API的一部分，用户可以根据需求自己定义和实现signalling，signalling主要用于三种类型的信息：
+
+session控制消息：初始化或关闭 会话，还可以上报错误
+网络配置：通过signalling告诉 第三方(想和自己连接的Peer)自己的IP和Port
+多媒体文件处理能力:决定双方的多媒体文件的编码、解码格式。
+
+
+ICE framework 用于连接Peer(端点)间的互相连接.
+
+STUN 和 STUN协议的扩展 TURN协议，这个主要是ICE framework 用来支持 NAT穿透，使得 RTCPeerConnection 能够应对变幻莫测的网络环境。
+
+stun的long-term credential mechanism 的key 可以通过coturn的 turnadmin -a -u username -p password -k获得,也就是说如果通过udp连接到coturn server则需要通</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2016-09-13
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/webrtc">webrtc</a>&nbsp;
+                        
+                            <a href="/tags/peer%20to%20peer">peer to peer</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2016/08/16/goa请求处理解析/">
+                <p class="h4 index-header">goa请求处理解析</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">1. 入口app.MountXXXController -&gt;service.Mux.Handle(&quot;GET&quot;, &quot;/add/:left/:right&quot;, ctrl.MuxHandler(&quot;Add&quot;, h, nil)) -&gt;ctrl.MuxHandler(&quot;Add&quot;, h, nil)
+在 ctrl.MuxHandler(&quot;Add&quot;, h, nil) 中返回一个 先Invoke用户实现的对应请求的逻辑方法,再依次Invoke middleware 的函数：
+// MuxHandler wraps a request handler into a MuxHandler. The MuxHandler initializes the request
+// context by loading the request state, invokes the handler and in case of error invokes the
+// controller (if there i</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2016-08-16
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/micro%20service">micro service</a>&nbsp;
+                        
+                            <a href="/tags/golang">golang</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2016/03/08/阿里短信发送api/">
+                <p class="h4 index-header">阿里短信发送api</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">阿里大鱼 短信发送接口 alibaba.aliqin.fc.sms.num.send 防坑指南0x00 吐槽文档写的已经无力吐槽了，请问您哪里有指出 参数需要 secret了呢？？？
+0x01 注意项1.md5 sign的生成是字符串 ： 
+${SECRET}app_key${APP_KEY}formatjsonmethodalibaba.aliqin.fc.sms.num.sendrec_num${PHONE_NUMBER}secretcb13046b7f305eb305e6e45d6b93405fsign_methodmd5sms_free_sign_name${SIGN_NAME}sms_param${PARAMS}sms_template_code${TEMPLATE_CODE}sms_typenormaltimestamp2016-03-08 16:01:53v2.0cb13046${SECRET}
+ 通过MD5加密生成。其中 ${}是对应的参数变量，一定不要忘了secret字段，这是文档里面没有的。。。。
+
+如果使用hmac方式加密（sign_method: ‘hmac’）</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2016-03-08
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Erlang">Erlang</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2016/01/05/restfulWebServices3/">
+                <p class="h4 index-header">restfulWebServices3</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">###设计表述客户端所关心的资源是一个抽象的实体，它是用URI来标识的。另一方面，表述是具体而真实的，你在客户端和服务器上针对它编写代码，进行操作。HTTP在请求和响应中为表述提供了一种包装格式。设计表述设计：1.使用HTTP提供的格式包含正确的标头，2.当表述有正文时，为正文选择合适的媒体类型并设计一种格式。
+###如何使用实体头来注解表述表述不仅仅是以某种格式序列化后的数据，它是一连串字节加上用于描述那些字节的元数据。在HTTP中，表述元数据是由使用实体头的名值对来实现的。使用以下标头来注解包含消息正文的表述：
+
+Conent-Type，用于描述表述类型，包含charset 参数或其他针对该媒体类型而定义的参数。
+Content-Length,用于指定表述正文的字节大小。HTTP1.1支持一种更有效的机制，名为分块转移编码（chuncked transfer encoding)
+Content-Language,如果您以某种语言对表述进行本地化，用该标头来指定语言。
+Content-MD5，工具/软件 在处理或存储表述时，可能存在错误，需要提供一致性校验，用该标头来包含一个表述正文</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2016-01-05
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Web">Web</a>&nbsp;
+                        
+                            <a href="/tags/Restful">Restful</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2016/01/05/restfulWebServices2/">
+                <p class="h4 index-header">restfulWebServices2</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">##Restful web Services —-第 2章 笔记
+###识别资源开发RESTful Web 服务的首要步骤之一就是设计资源模型，资源模型对所有客户端用来与服务器交互的资源加以识别和分类。
+###如何选择资源粒度通过网络效率、表达的多少以及客户端的易用程度来帮助确定资源的粒度。粗粒度设计便于富客户端应用程序。而更精细的资源粒度可以更好地满足缓存的要求。因此，应从客户端和网络的角度确定资源的粒度。下列因素可能会进一步影响资源粒度：
+
+可缓存性
+修改频率
+可变性仔细设计资源粒度，以确保使用更多缓存，减小修改频率；或将不可变数据从使用缓存较少、修改频率更高或可变数据分离出来，这样可以改善客户端和服务端的效率。
+
+###如何将资源组织为集合将资源组织为集合，可以让客户端及服务器将一组资源视为一个资源来引用，在集合上执行查询，甚至将集合作为工厂来创建新资源。
+基于应用程序特有条件来识别相似的资源，常见的例子有，共享同一数据库Schema 的资源、有相同特性attribute或属性property的资源或客户端看起来是相似的资源。
+###如何支持计算或处理函数将处理函数视为一个资源，</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2016-01-05
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Web">Web</a>&nbsp;
+                        
+                            <a href="/tags/Restful">Restful</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row mb-4 mx-auto">
+        
+        
+        <div class="col-12 col-md-8 m-auto">
+            <a href="/2016/01/05/restfulWebService1/">
+                <p class="h4 index-header">restfulWebService1</p>
+                <div class="index-excerpt">
+                    
+                        <div class="index-text mb-1">###REST(表述性状态转移）
+HTTP 的设计 目标是在客户端和服务器之间对库、服务器、代理、缓存和其他工具的可见性。可见性是：一个组件能够对其他两个组件之间的交互进行监视或仲裁的能力。当协议是可见的时，缓存、代理、防火墙等组件既可以监视甚至参与其中。
+HTTP 通过以下途径来实现可见性：
+
+
+HTTP的交互是无状态的，任何HTTP中介都可以推断出给定请求和响应的意义，而无须关联过去或将来的请求和响应。
+HTTP使用一个统一接口，包括有OPTIONS，GET，HEAD,POST,DELETE和TRACE方法。接口中的每一个方   法操作一个且仅有一个资源。每个方法的语法和含义不会因应用程序或资源的不同而发生改变。
+HTTP使用一种与MIME类似的信封格式进行表述编码。这个格式明确区分标头和内容。
+
+
+一个HTTP请求的格式：请求行：HTTP方法  资源路径  HTTP版本请求的表述形式表头：Content-Type：...请求的表述内容
+POST /api/bookclubserver/note/comment_text/put HTTP/1.1\r\n
+User-Agent: c</div>
+                    
+                </div>
+            </a>
+
+            
+                <div>
+                    <i class="iconfont icon-riqi2"></i>&nbsp;2016-01-05
+                    &nbsp;&nbsp;
+                    
+                    
+                        |&nbsp;&nbsp;<i class="iconfont icon-tag"></i>
+                        
+                            <a href="/tags/Web">Web</a>&nbsp;
+                        
+                            <a href="/tags/Restful">Restful</a>&nbsp;
+                        
+                    
+                </div>
+            
+        </div>
+    </div>
+
+
+
+<nav aria-label="index posts navigation">
+<ul class="pagination pg-blue justify-content-center mt-5">
+    
+    
+        <li class="page-item">
+        <a class="page-link" href="/page/2/">Next</a>
+        </li>
+    
+</ul>
+</nav>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+</main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank" rel="nofollow noopener"> <b>Material-T</b></a>
+    <br>
+    
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="/lib/mdbootstrap/js/jquery-3.4.1.min.js"></script>
+  <script src="/lib/mdbootstrap/js/popper.min.js"></script>
+  <script src="/lib/mdbootstrap/js/bootstrap.min.js?v=4.3.1"></script>
+  <script src="/lib/mdbootstrap/js/mdb.min.js?v=4.8.7"></script>
+  <script src="/lib/nprogress/nprogress.min.js?v=0.2.0"></script>
+  <script src="/js/main.js"></script>
+  
+  
+    <script src="/lib/prettify/prettify.min.js?v=0.1.0"></script>
+    <script>
+      $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums');
+        prettyPrint();
+      })
+    </script>
+  
+  
+    <script src="/lib/typed/typed.min.js?v=2.0.9"></script>
+    <script>
+        var typed = new Typed('#subtitle', {
+          strings: [
+            '  ',
+            "In memory of memory&nbsp;",
+        ],
+        cursorChar: "_",
+        typeSpeed: 70,
+        startDelay: 300, //开始之前延迟300毫秒
+        loop: false,
+        });
+        $(".typed-cursor").addClass("h2");
+    </script>
+  
+  
+    <script src="/lib/anchor/anchor.min.js?v=4.2.0"></script>
+    <script>
+      anchors.options = {
+        placement: "right",
+        visible: "false",
+        
+      };
+      anchors.add(".post-content > h1,h2,h3,h4,h5,h6");
+    </script>
+  
+</body>
+</html>

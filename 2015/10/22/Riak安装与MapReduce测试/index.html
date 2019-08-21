@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="In memory of memory">
+    <meta name="author" content="csbzy">
+    <meta name="keywords" content="undefined">
+    <title>Riak安装与MapReduce测试 ~ csbzy&#39; blog</title>
+    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css?v=5.7.2">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/bootstrap.min.css?v=4.3.1">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css?v=4.8.7">
+    <link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css">
+    <link rel="stylesheet" href="/lib/nprogress/nprogress.css?v=0.2.0">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+    
+        <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+    
+    <link rel="stylesheet" href="/css/main.css">
+
+    
+</head>
+
+
+<body>
+<header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>csbzy&#39; blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/categories/">Categories</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/tags/">Tags</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2"
+         style="background: url('/img/post.jpg')no-repeat center center;background-size: cover;">
+        <div class="full-bg-img">
+            <div class="mask rgba-black-light flex-center">
+                <div class="container text-center white-text wow fadeInUp">
+                    <span class="h2" id="subtitle">
+                        
+                    </span>
+                    
+                        <br>
+                        <p>Thursday, October 22nd 2015, 8:33 pm</p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    
+        
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-2"></div>
+            <div class="col-lg-8 nopadding-md">
+                <div class="py-5 z-depth-3 board">
+                    <div class="post-content mx-auto">
+                        <div class="markdown-body">
+                            <h1 id="Riak安装与MapReduce测试"><a href="#Riak安装与MapReduce测试" class="headerlink" title="Riak安装与MapReduce测试"></a>Riak安装与MapReduce测试</h1><h1 id="1-安装环境"><a href="#1-安装环境" class="headerlink" title="1.安装环境:"></a>1.安装环境:</h1><ol>
+<li>Ubuntu 14.04</li>
+<li>riak-2.1.1 源码编译</li>
+<li>erlang版本R16B03-1(注意 riak目前还不支持R17以上的erlang 版本)</li>
+</ol>
+<h1 id="2-依赖安装"><a href="#2-依赖安装" class="headerlink" title="2.依赖安装"></a>2.依赖安装</h1><ol>
+<li>ssl :sudo apt-get install libssl0.9.8</li>
+<li>pam library: sudo apt-get install libpam0g-dev</li>
+</ol>
+<h1 id="3-下载并编译riak"><a href="#3-下载并编译riak" class="headerlink" title="3.下载并编译riak"></a>3.下载并编译riak</h1><ol>
+<li>下载:<code>wget http://s3.amazonaws.com/downloads.basho.com/riak/2.1/2.1.1/riak-2.1.1.tar.gz</code></li>
+<li>解压:<code>tar zxvf riak-2.1.1.tar.gz</code></li>
+<li>编译:<code>cd riak-2.1.1 &amp;&amp; make</code></li>
+</ol>
+<h1 id="4-构建riak集群"><a href="#4-构建riak集群" class="headerlink" title="4.构建riak集群"></a>4.构建riak集群</h1><ol>
+<li>生成riak node实例:<code>make devrel DEVNODES=$N</code>,其中N是想要生成的节点数</li>
+<li>配置riak node ：riak的配置文件位于 $RIAK_HOME/dev/dev*/etc/riak.conf,可以配置节点名称,HTTP服务监听IP和端口,PCB 协议监听IP和端口storage backend(存储后端) 等。</li>
+<li>启动riak node :<code>$RIAK_NODE_ROOT/bin/riak start</code></li>
+<li><p>组成集群</p>
+<ol>
+<li>加入集群： <code>$RIAK_NODE_ROOT/bin/riak-admin cluster join $NODENAME</code></li>
+<li><code>$RIAK_NODE_ROOT/bin/riak-admin cluster plan</code></li>
+<li>提交:<code>$RIAK_NODE_ROOT/bin/riak-admin cluster commit</code></li>
+<li>查看集群状态:<code>$RIAK_NODE_ROOT/bin/riak-admin member-status</code></li>
+</ol>
+</li>
+</ol>
+<h1 id="5-相关官方文档"><a href="#5-相关官方文档" class="headerlink" title="5.相关官方文档"></a>5.相关官方文档</h1><ol>
+<li>riak.conf 配置文件：<code>http://docs.basho.com/riak/2.1.1/ops/building/configuration/</code></li>
+<li>riak和riak-admin:<code>http://docs.basho.com/riak/2.1.1/ops/running/tools/riak/</code> 、<code>http://docs.basho.com/riak/2.1.1/ops/running/tools/riak-admin/</code></li>
+<li>存储后端的选择：<code>http://docs.basho.com/riak/latest/ops/building/planning/backends/</code></li>
+<li>MapReduce:<code>http://docs.basho.com/riak/2.1.1/dev/advanced/mapreduce/</code></li>
+</ol>
+<h1 id="6-MapReduce-实践"><a href="#6-MapReduce-实践" class="headerlink" title="6.MapReduce 实践"></a>6.MapReduce 实践</h1><p>MapReduce是Riak主要用于非主键查询的方法，但是MapReduce 操作的代价是十分昂贵的，甚至会降低生产环境集群的性能。因此，应当尽量少用MapReduce，并且永远不要用于实时查询。Riak允许你通过Erlang或者Javascript来进行MapReduce操作，但是从Riak2.0开始，javascript开始被弃用。<br>MapReduce测试：<br>五台机器，组成集群：<br>一台<br>model name      : Intel(R) Core(TM) i5-4460  CPU @ 3.20GHz<br>MemTotal:        1429236 kB<br>四台<br>Intel(R) Xeon(R) CPU E5-2620 0 @ 2.00GHz<br>MemTotal:       65897328 kB</p>
+<p>在erlang shell里面输入：</p>
+<pre><code class="erlang">    {A,B,C}=erlang:now(),
+    {ok, Soc1} = riakc_pb_socket:start_link(&quot;127.0.0.1&quot;, 10017),
+    Map =fun(V, _, _) -&gt;
+        {struct, PropList} = mochijson2:decode(riak_object:get_value(V)),
+        U = proplists:get_value(&lt;&lt;&quot;user_id&quot;&gt;&gt;, PropList),
+        [dict:from_list([{U, 1}])]
+    end,
+    Reduce = fun(Results, _) -&gt;
+        Return =
+        lists:foldl(fun(D, Acc) -&gt;
+        dict:merge(fun(_, X, Y) -&gt; X + Y end, D, Acc)
+        end, dict:new(), lists:flatten([Results])),
+        [Return]
+    end,
+    Reslut = riakc_pb_socket:mapred_bucket(Soc1, &lt;&lt;&quot;user_read_log4&quot;&gt;&gt;, [{map, {qfun, Map}, none, false}, {reduce, {qfun,         Reduce}, none, true}], 6000000),
+    {A1,B1,C1}=erlang:now(),
+    (A1* 1000000000000 + B1*1000000 + C1)  - (A* 1000000000000 + B*1000000+ C).
+</code></pre>
+<p>%通过PCB接口，使用erlang进行MapReduce处理 240080 条数据，耗时 62112283 微秒，约等于 62s</p>
+<pre><code class="shell">  root@localhost:/data/riak-2.1.1# date +%s
+    1442537754
+    root@localhost:/data/riak-2.1.1# curl -XPOST -H&quot;content-type: application/json&quot;\
+        http://localhost:10018/mapred --data @-&lt;&lt;\EOF
+        {&quot;inputs&quot;:&quot;user_read_log4&quot;,&quot;query&quot;:[{&quot;map&quot;:{&quot;language&quot;:&quot;javascript&quot;,&quot;source&quot;:&quot;
+        function(v) {
+        var data=Riak.mapValuesJson(v)[0];
+        var r={};
+        r[data.user_id]=1;
+       return [r];
+        }&quot;,&quot;keep&quot;:false}},
+        {&quot;reduce&quot;:{&quot;language&quot;:&quot;javascript&quot;,&quot;source&quot;:&quot;
+        function(v){
+                    var i, j, r = {}, w;
+                for (i = 0; i &lt; v.length; i += 1) {
+                    for (w in v[i]) {
+                        if (v[i].hasOwnProperty(w)) {
+                            if (r[w]) { r[w] += v[i][w]; }
+                            else { r[w] = v[i][w]; }
+                        }
+                    }
+                }
+                return [r];
+        }&quot;
+        }}],&quot;timeout&quot;:1000000}
+     EOF
+    root@localhost:/data/riak-2.1.1# date +%s
+    1442538003
+</code></pre>
+<p>%通过http接口，使用javascript 进行Mapreduce 处理240080 条数据，1442538003-1442537754=249s</p>
+<pre><code class="erlang">    map_javascript()-&gt;
+        {A,B,C}=erlang:now(),
+        {ok, Soc1} = riakc_pb_socket:start_link(&quot;127.0.0.1&quot;, 10017),
+        Map= &lt;&lt;&quot;function(v) { var data=Riak.mapValuesJson(v)[0];var r={};r[data.user_id]=1;return [r];}&quot;&gt;&gt;,
+        Reduce= &lt;&lt;&quot;function(v){var i, j, r = {}, w;for (i = 0; i &lt; v.length; i += 1) {for (w in v[i]) \
+           {if (v[i].hasOwnProperty(w)) {if (r[w]) { r[w] += v[i][w]; }else { r[w] = v[i][w]; }}}}return [r];}&quot; &gt;&gt;,
+        Result=riakc_pb_socket:mapred_bucket(Soc1, &lt;&lt;&quot;user_read_log4&quot;&gt;&gt;, [{map, {jsanon, Map}, none, false}, {reduce, {jsanon, Reduce}, none, true}], 6000000),
+        {A1,B1,C1}=erlang:now(),
+        {Result,(A1* 1000000000000 + B1*1000000 + C1)  - (A* 1000000000000 + B*1000000+ C)}.
+
+    (book_club_server@localhost)11&gt; bus_user_read_behaviortrace_handler:map_javascript().
+    {{ok,[{1,
+           [{struct,[{&lt;&lt;&quot;201507301601028734&quot;&gt;&gt;,27301},
+                 {&lt;&lt;&quot;201507301601028728&quot;&gt;&gt;,26948},
+                 {&lt;&lt;&quot;201507301601028735&quot;&gt;&gt;,23250},
+                 {&lt;&lt;&quot;201507301601028733&quot;&gt;&gt;,27156},
+                 {&lt;&lt;&quot;201507301601028730&quot;&gt;&gt;,27175},
+                 {&lt;&lt;&quot;201507301601028732&quot;&gt;&gt;,26993},
+                 {&lt;&lt;&quot;201507301601028727&quot;&gt;&gt;,26930},
+                 {&lt;&lt;&quot;201507301601028729&quot;&gt;&gt;,27177},
+                 {&lt;&lt;&quot;201507301601028731&quot;&gt;&gt;,27150}]}]}]},240914091}
+</code></pre>
+<p>%通过PCB协议接口，使用Javascript 进行MapReduce处理240080 条数据，耗时 240914091微妙 ，约240秒.<br><code>`</code></p>
+<p>通过上面的测试，我们就可以知道为什么Riak自己都不推荐使用Javascript 进行MapReduce了，使用Erlang  的进行MapReduce的效率几乎是 javascript 的4倍。</p>
+
+                            <hr>
+                        </div>
+                        <br>
+                        <div>
+                            
+                            <p>
+                                <i class="iconfont icon-tag"></i>
+                                
+                                    <a class="hover-with-bg" href="/tags/Riak">Riak</a>
+                                
+                                    <a class="hover-with-bg" href="/tags/MapReduce">MapReduce</a>
+                                
+                            </p>
+                            
+                                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="d-none d-lg-block col-lg-2 toc-container">
+            
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+    <div class="container comments mx-auto" id="comments">
+        
+    </div>
+</div>
+    
+</main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank" rel="nofollow noopener"> <b>Material-T</b></a>
+    <br>
+    
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="/lib/mdbootstrap/js/jquery-3.4.1.min.js"></script>
+  <script src="/lib/mdbootstrap/js/popper.min.js"></script>
+  <script src="/lib/mdbootstrap/js/bootstrap.min.js?v=4.3.1"></script>
+  <script src="/lib/mdbootstrap/js/mdb.min.js?v=4.8.7"></script>
+  <script src="/lib/nprogress/nprogress.min.js?v=0.2.0"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="/lib/tocbot/tocbot.min.js?v=4.7.0"></script>
+    
+    <script src="/js/post.js"></script>
+  
+  
+    <script src="/lib/prettify/prettify.min.js?v=0.1.0"></script>
+    <script>
+      $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums');
+        prettyPrint();
+      })
+    </script>
+  
+  
+    <script src="/lib/typed/typed.min.js?v=2.0.9"></script>
+    <script>
+        var typed = new Typed('#subtitle', {
+          strings: [
+            '  ',
+            "Riak安装与MapReduce测试&nbsp;",
+        ],
+        cursorChar: "_",
+        typeSpeed: 70,
+        startDelay: 300, //开始之前延迟300毫秒
+        loop: false,
+        });
+        $(".typed-cursor").addClass("h2");
+    </script>
+  
+  
+    <script src="/lib/anchor/anchor.min.js?v=4.2.0"></script>
+    <script>
+      anchors.options = {
+        placement: "right",
+        visible: "false",
+        
+      };
+      anchors.add(".post-content > h1,h2,h3,h4,h5,h6");
+    </script>
+  
+</body>
+</html>

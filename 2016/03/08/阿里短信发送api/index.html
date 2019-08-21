@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="In memory of memory">
+    <meta name="author" content="csbzy">
+    <meta name="keywords" content="undefined">
+    <title>阿里短信发送api ~ csbzy&#39; blog</title>
+    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css?v=5.7.2">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/bootstrap.min.css?v=4.3.1">
+    <link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css?v=4.8.7">
+    <link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css">
+    <link rel="stylesheet" href="/lib/nprogress/nprogress.css?v=0.2.0">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+    
+        <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+    
+    <link rel="stylesheet" href="/css/main.css">
+
+    
+</head>
+
+
+<body>
+<header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>csbzy&#39; blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/categories/">Categories</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/tags/">Tags</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2"
+         style="background: url('/img/post.jpg')no-repeat center center;background-size: cover;">
+        <div class="full-bg-img">
+            <div class="mask rgba-black-light flex-center">
+                <div class="container text-center white-text wow fadeInUp">
+                    <span class="h2" id="subtitle">
+                        
+                    </span>
+                    
+                        <br>
+                        <p>Tuesday, March 8th 2016, 5:27 pm</p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    
+        
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-2"></div>
+            <div class="col-lg-8 nopadding-md">
+                <div class="py-5 z-depth-3 board">
+                    <div class="post-content mx-auto">
+                        <div class="markdown-body">
+                            <h1 id="阿里大鱼-短信发送接口-alibaba-aliqin-fc-sms-num-send-防坑指南"><a href="#阿里大鱼-短信发送接口-alibaba-aliqin-fc-sms-num-send-防坑指南" class="headerlink" title="阿里大鱼 短信发送接口 alibaba.aliqin.fc.sms.num.send 防坑指南"></a>阿里大鱼 短信发送接口 alibaba.aliqin.fc.sms.num.send 防坑指南</h1><h1 id="0x00-吐槽"><a href="#0x00-吐槽" class="headerlink" title="0x00 吐槽"></a>0x00 吐槽</h1><p><a href="http://open.taobao.com/doc2/apiDetail.htm?spm=a219a.7629065.0.0.teG5ys&amp;apiId=25450" target="_blank" rel="noopener">文档</a>写的已经无力吐槽了，请问您哪里有指出 参数需要 secret了呢？？？</p>
+<h1 id="0x01-注意项"><a href="#0x01-注意项" class="headerlink" title="0x01 注意项"></a>0x01 注意项</h1><p>1.md5 sign的生成是字符串 ： </p>
+<pre><code>${SECRET}app_key${APP_KEY}formatjsonmethodalibaba.aliqin.fc.sms.num.sendrec_num${PHONE_NUMBER}secretcb13046b7f305eb305e6e45d6b93405fsign_methodmd5sms_free_sign_name${SIGN_NAME}sms_param${PARAMS}sms_template_code${TEMPLATE_CODE}sms_typenormaltimestamp2016-03-08 16:01:53v2.0cb13046${SECRET}
+</code></pre><p> 通过MD5加密生成。其中 <code>${}</code>是对应的参数变量，一定不要忘了<code>secret</code>字段，这是文档里面没有的。。。。</p>
+<blockquote>
+<p>如果使用hmac方式加密<code>（sign_method: ‘hmac’）</code>，则不需要首尾加上secret，md5则需要</p>
+</blockquote>
+<p>2.参数的value 要进行 url编码</p>
+<h1 id="0x02-Erlang-代码接口"><a href="#0x02-Erlang-代码接口" class="headerlink" title="0x02 Erlang 代码接口"></a>0x02 Erlang 代码接口</h1><p><a href="https://github.com/chenshaobo/ali_sms" target="_blank" rel="noopener">github地址</a></p>
+<pre><code class="erlang">
+    %%%-------------------------------------------------------------------
+    %%% @author chenshaobo0428
+    %%% @copyright (C) 2016, &lt;COMPANY&gt;
+    %%% @doc
+    %%%
+    %%% @end
+    %%% Created : 08. 03 2016 16:47
+    %%%-------------------------------------------------------------------
+    -module(ali_sms).
+    -author(&quot;chenshaobo0428&quot;).
+
+    %% API
+    -export([gen_ali_sms_url/4]).
+    -define(DEFAULT_PARAMS,[
+        {&quot;method&quot;,&lt;&lt;&quot;alibaba.aliqin.fc.sms.num.send&quot;&gt;&gt;},
+        {&quot;app_key&quot;,&lt;&lt;&quot;YOUR KEY&quot;&gt;&gt;},
+        {&quot;secret&quot;,&quot;YOUR SECRET&quot;},
+        {&quot;v&quot;,&lt;&lt;&quot;2.0&quot;&gt;&gt;},
+        {&quot;sign_method&quot;,&lt;&lt;&quot;md5&quot;&gt;&gt;},
+        {&quot;format&quot;,&lt;&lt;&quot;json&quot;&gt;&gt;},
+        {&quot;sms_type&quot;,&lt;&lt;&quot;normal&quot;&gt;&gt;}
+    ]).
+
+    -define(BASE_URL,&quot;http://gw.api.taobao.com/router/rest?&quot;).
+    %% 传入参数 返回 通过阿里大鱼（get方式)发送短信的完整url
+
+    gen_ali_sms_url(PhoneNumber,SMSParam,SignName,TemplateCode)-&gt;
+
+        {&quot;secret&quot;, SecretKey} = lists:keyfind(&quot;secret&quot;, 1, ?DEFAULT_PARAMS),
+
+        Params=
+        [{&quot;rec_num&quot;, to_bin(PhoneNumber)}, {&quot;sms_param&quot;, to_bin(SMSParam)},
+        {&quot;sms_free_sign_name&quot;, to_bin(SignName)}, {&quot;sms_template_code&quot;, TemplateCode},
+        {&quot;timestamp&quot;, to_bin(format_date())}] ++ ?DEFAULT_PARAMS,
+    %%     按照字母排序
+        SortList = lists:sort(fun({Key1, _}, {Key2, _}) -&gt;
+        Key1 &lt; Key2
+        end, Params),
+        MD5Source = SecretKey ++ lists:flatten([io_lib:format(&quot;~s~s&quot;, [Key, Val]) || {Key, Val} &lt;- SortList]) ++ SecretKey,
+        SignMd5 = to_bin(string:to_upper(to_list(to_md5(MD5Source)))),
+    %%
+        RequestQuery = lists:flatten([io_lib:format(&quot;~s=~s&amp;&quot;, [Key, http_uri:encode(to_list(Val))]) || {Key, Val} &lt;- [{&quot;sign&quot;, SignMd5} | SortList]]),
+        ?BASE_URL ++ RequestQuery.
+
+
+    -define(FILL_ZERO(X) ,case X &gt; 9 of
+                 true -&gt;
+                     to_list(X);
+                 false -&gt;
+                     &quot;0&quot;++     to_list(X)
+                 end).
+
+    format_date()-&gt;
+        {Y,M,D} = erlang:date(),
+        {H,Min,S}= time(),
+        lists:flatten(io_lib:format(&quot;~s-~s-~s ~s:~s:~s&quot;, [?FILL_ZERO(Y),?FILL_ZERO(M),?FILL_ZERO(D),?FILL_ZERO(H),?FILL_ZERO(Min),?FILL_ZERO(S)])).
+
+    to_bin(Int) when is_integer(Int) -&gt;
+        erlang:integer_to_binary(Int);
+    to_bin(Float) when is_float(Float)-&gt;
+        erlang:float_to_binary(Float,[{decimals, 2}, compact]);
+    to_bin(Atom) when is_atom(Atom) -&gt;
+        erlang:atom_to_binary(Atom, utf8);
+    to_bin(List) when is_list(List) -&gt;
+        erlang:list_to_binary(List);
+    to_bin(Binary) when is_binary(Binary) -&gt;
+        Binary;
+    to_bin(_) -&gt;
+        erlang:throw(error_type).
+
+
+        % return value is binary
+    to_md5(Value) -&gt;
+        to_hex(to_list(erlang:md5(Value))).
+
+    to_hex(L) when is_list(L) -&gt;
+        lists:flatten([hex(I) || I &lt;- L]).
+
+    hex(I) when I &gt; 16#f -&gt;
+        [hex0((I band 16#f0) bsr 4), hex0((I band 16#0f))];
+    hex(I) -&gt; [$0, hex0(I)].
+
+    hex0(10) -&gt; $a;
+    hex0(11) -&gt; $b;
+    hex0(12) -&gt; $c;
+    hex0(13) -&gt; $d;
+    hex0(14) -&gt; $e;
+    hex0(15) -&gt; $f;
+    hex0(I) -&gt; $0 + I.
+
+
+    to_list(Atom) when is_atom(Atom) -&gt; erlang:atom_to_list(Atom);
+    to_list(Int) when is_integer(Int) -&gt; erlang:integer_to_list(Int);
+    to_list(List) when is_list(List) -&gt; List;
+    to_list(Bin) when is_binary(Bin) -&gt; erlang:binary_to_list(Bin);
+    to_list(_) -&gt;
+        erlang:throw(error_type).
+</code></pre>
+
+                            <hr>
+                        </div>
+                        <br>
+                        <div>
+                            
+                            <p>
+                                <i class="iconfont icon-tag"></i>
+                                
+                                    <a class="hover-with-bg" href="/tags/Erlang">Erlang</a>
+                                
+                            </p>
+                            
+                                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="d-none d-lg-block col-lg-2 toc-container">
+            
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+    <div class="container comments mx-auto" id="comments">
+        
+    </div>
+</div>
+    
+</main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank" rel="nofollow noopener"> <b>Material-T</b></a>
+    <br>
+    
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="/lib/mdbootstrap/js/jquery-3.4.1.min.js"></script>
+  <script src="/lib/mdbootstrap/js/popper.min.js"></script>
+  <script src="/lib/mdbootstrap/js/bootstrap.min.js?v=4.3.1"></script>
+  <script src="/lib/mdbootstrap/js/mdb.min.js?v=4.8.7"></script>
+  <script src="/lib/nprogress/nprogress.min.js?v=0.2.0"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="/lib/tocbot/tocbot.min.js?v=4.7.0"></script>
+    
+    <script src="/js/post.js"></script>
+  
+  
+    <script src="/lib/prettify/prettify.min.js?v=0.1.0"></script>
+    <script>
+      $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums');
+        prettyPrint();
+      })
+    </script>
+  
+  
+    <script src="/lib/typed/typed.min.js?v=2.0.9"></script>
+    <script>
+        var typed = new Typed('#subtitle', {
+          strings: [
+            '  ',
+            "阿里短信发送api&nbsp;",
+        ],
+        cursorChar: "_",
+        typeSpeed: 70,
+        startDelay: 300, //开始之前延迟300毫秒
+        loop: false,
+        });
+        $(".typed-cursor").addClass("h2");
+    </script>
+  
+  
+    <script src="/lib/anchor/anchor.min.js?v=4.2.0"></script>
+    <script>
+      anchors.options = {
+        placement: "right",
+        visible: "false",
+        
+      };
+      anchors.add(".post-content > h1,h2,h3,h4,h5,h6");
+    </script>
+  
+</body>
+</html>
